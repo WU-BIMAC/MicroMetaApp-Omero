@@ -32,7 +32,7 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-		<title>4DN Microscopy Metadata Tool</title>
+		<title>4DN Micro-Meta App</title>
 	</head>
 	<body>
 		<noscript>You need to enable JavaScript to run this app.</noscript>
@@ -50,7 +50,8 @@
 		<script>
 			(function() {
 				// Parent app could be required to handle detecting window resize
-				var MicroscopyMetadataToolApp = window.MicroscopyMetadataToolOmero;
+				var MicroscopyMetadataToolApp =
+					window.MicroscopyMetadataToolOmero.default;
 
 				//var debouncedRender = _.debounce(render, 500);
 

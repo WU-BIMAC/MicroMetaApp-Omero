@@ -1,15 +1,19 @@
-import MicroscopeMetadataTool from "4dn-microscopy-metadata-tool";
+import MicroscopyMetadataTool from "4dn-microscopy-metadata-tool";
 
-class MicroscopeMetadataToolOmero extends React.PureComponent {
+export default class MicroscopyMetadataToolOmero extends React.PureComponent {
+	constructor(props) {
+		super(props);
+	}
 	//onLoadMicroscopes={props.onLoadMicroscopes}
 	//onSaveMicroscope = { props.onWorkingDirectorySave }
 	render() {
-		<MicroscopeMetadataTool
-			width={props.dims.width}
-			height={props.dims.height}
-			onLoadSchema={props.onLoadSchema}
-		/>;
+		return (
+			<MicroscopyMetadataTool
+				width={this.props.width}
+				height={this.props.height}
+				onLoadSchema={this.props.onLoadSchema}
+				onLoadMicroscopes={this.props.onLoadMicroscopes}
+			/>
+		);
 	}
 }
-
-export { MicroscopeMetadataToolOmero };
