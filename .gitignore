@@ -10,11 +10,13 @@
 
 # production
 /build
+omero_microscopyMetadataTool/static/
 
 # build
 /dist
 
 # misc
+*.pyc
 .DS_Store
 .env.local
 .env.development.local
