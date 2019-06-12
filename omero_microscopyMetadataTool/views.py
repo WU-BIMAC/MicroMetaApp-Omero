@@ -1,12 +1,15 @@
 
 from omeroweb.webclient.decorators import login_required
 from django.shortcuts import render
-from omero.rtypes import wrap
+from omero.rtypes import wrap, unwrap
 from cStringIO import StringIO
 from django.http import JsonResponse
 import json
 from omero.model import FileAnnotationI, OriginalFileI
 from omero.gateway import FileAnnotationWrapper
+from omero.sys import ParametersI
+from datetime import datetime
+import time
 
 PROJECT_NAME = "my microscopes"
 JSON_FILEANN_NS = "micro-meta-app.json"
@@ -15,6 +18,58 @@ JSON_FILEANN_NS = "micro-meta-app.json"
 def index(request, conn=None, **kwargs):
 
     return render(request, 'microscopyMetadataTool/index.html')
+
+
+@login_required()
+def list_microscopes(request, conn=None, **kwargs):
+
+    params = ParametersI()
+    params.addString('ns', wrap(JSON_FILEANN_NS))
+    # q = """select new map(obj.id as id,
+    #             obj.description as desc,
+    #             o.firstName as firstName,
+    #             o.lastName as lastName,
+    #             e.time as time,
+    #             f.name as name,
+    #             obj as obj_details_permissions)
+    #         from FileAnnotation obj
+    #         join obj.details.owner as o
+    #         join obj.details.creationEvent as e
+    #         join obj.file.details as p
+    #         join obj.file as f where obj.ns=:ns"""
+    q = """select obj from FileAnnotation obj
+            join obj.details.owner as o
+            join obj.details.creationEvent as e
+            join obj.file.details as p
+            join obj.file as f where obj.ns=:ns"""
+
+    qs = conn.getQueryService()
+    # file_anns = qs.projection(q, params, conn.SERVICE_OPTS)
+    file_anns = qs.findAllByQuery(q, params, conn.SERVICE_OPTS)
+    rsp = []
+    for file_ann in file_anns:
+        print 'fa', file_ann
+        fa_wrapper = FileAnnotationWrapper(conn, file_ann)
+        file_wrapper = fa_wrapper.getFile()
+        print 'file_wrapper', file_wrapper
+        file_data = "".join(list(file_wrapper.getFileInChunks()))
+        print 'file_data', file_data
+        json_data = json.loads(file_data)
+        # date = datetime.fromtimestamp(unwrap(fa['time'])/1000)
+        # first_name = unwrap(file_ann)
+        # last_name = unwrap(fa['lastName'])
+        fig_file = {
+            'id': file_ann.id.val,
+            # 'name': unwrap(fa['name']),
+            # 'description': unwrap(fa['desc']),
+            # 'ownerFullName': "%s %s" % (first_name, last_name),
+            # 'creationDate': time.mktime(date.timetuple()),
+            # 'canEdit': fa['obj_details_permissions'].get('canEdit'),
+            'microscope': json_data
+        }
+        rsp.append(fig_file)
+
+    return JsonResponse({'data': rsp})
 
 
 @login_required()
