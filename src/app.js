@@ -11,3 +11,5 @@ class MicroscopeMetadataToolOmero extends React.PureComponent {
 		/>;
 	}
 }
+
+export { MicroscopeMetadataToolOmero };
