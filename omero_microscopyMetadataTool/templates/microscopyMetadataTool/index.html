@@ -12,7 +12,8 @@
         ></script>
         <script src="{% static 'microscopyMetadataTool/js/MicroscopyMetadataToolOmero.dev.js' %}"></script>
 
-        <link rel="stylesheet" type="text/css" href="{% static 'microscopyMetadataTool/css/style.css' %}" />
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.0/css/bootstrap.min.css" />
+        <!-- <link rel="stylesheet" type="text/css" href="{% static 'microscopyMetadataTool/css/style.css' %}" /> -->
         <meta charset="utf-8" />
         <link rel="shortcut icon" href="./favicon.ico" />
         <meta
@@ -50,6 +51,21 @@
         To create a production bundle, use `npm run build` or `yarn build`.
         -->
         <script>
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
             (function() {
                 // Parent app could be required to handle detecting window resize
                 var MicroscopyMetadataToolApp = window.MicroscopyMetadataToolOmero.default;
@@ -65,6 +81,7 @@
                         React.createElement(MicroscopyMetadataToolApp, {
                             height: dims.height,
                             width: dims.width,
+                            imagesPath: "{% static 'microscopyMetadataTool/images/' %}",
                             key: "my-app",
                             onLoadSchema: function(complete) {
                                 // Maybe some UI to select something...
@@ -86,6 +103,28 @@
                             onLoadMicroscopes: function(complete) {
                                 let microscopesDB = {};
                                 complete(microscopesDB);
+                            },
+                            onSaveMicroscope: function(complete, microscope) {
+                                console.log('microscope', microscope);
+                                var csrftoken = getCookie('csrftoken');
+                                console.log('csrftoken', csrftoken);
+
+                                fetch("{% url 'microscopyMetadataTool_save_microscope' %}", {
+                                    credentials: 'include',
+                                    method: 'POST',
+                                    mode: 'same-origin',
+                                    headers: {
+                                        'Accept': 'application/json',
+                                        'Content-Type': 'application/json',
+                                        'X-CSRFToken': csrftoken
+                                    },
+                                    body: JSON.stringify({'microscope': microscope})
+                                  }).then(function(response) {
+                                    return response.json();
+                                  }).then(function(data) {
+                                    console.log(data);
+                                    complete(microscope.Name);
+                                  });
                             }
                         }),
                         document.getElementById("root")

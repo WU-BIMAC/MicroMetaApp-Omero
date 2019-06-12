@@ -4,3 +4,7 @@
 echo "Deploying built resources to web app directory..."
 mkdir -p omero_microscopyMetadataTool/static/microscopyMetadataTool/js
 cp dist/MicroscopyMetadataToolOmero.dev.js omero_microscopyMetadataTool/static/microscopyMetadataTool/js/
+
+mkdir -p omero_microscopyMetadataTool/static/microscopyMetadataTool/images
+cp public/assets/* omero_microscopyMetadataTool/static/microscopyMetadataTool/images/
+
