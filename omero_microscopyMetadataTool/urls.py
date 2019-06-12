@@ -10,4 +10,7 @@ urlpatterns = patterns(
 
     url(r'^save_microscope/$', views.save_microscope,
         name='microscopyMetadataTool_save_microscope'),
+
+    url(r'^list_microscopes/$', views.list_microscopes,
+        name='microscopyMetadataTool_list_microscopes'),
 )
