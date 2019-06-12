@@ -8,7 +8,6 @@ class MicroscopeMetadataToolOmero extends React.PureComponent {
 			width={props.dims.width}
 			height={props.dims.height}
 			onLoadSchema={props.onLoadSchema}
-			imagesPath={imagesPath}
 		/>;
 	}
 }
