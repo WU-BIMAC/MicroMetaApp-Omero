@@ -11,7 +11,7 @@ from omero.sys import ParametersI
 from datetime import datetime
 import time
 
-PROJECT_NAME = "my microscopes"
+PROJECT_NAME = "Microscopes"
 JSON_FILEANN_NS = "micro-meta-app.json"
 
 @login_required()
