@@ -16,7 +16,7 @@
 		"test": "node scripts/test.js",
 		"build-internal": "gulp build-internal",
 		"build": "gulp build-dev && gulp build && .\\deploy_build.bat",
-		"dev": "gulp dev && ./deploy_build.sh",
+		"dev": "gulp dev && ./deploy_build.bat",
 		"dist": "gulp build-dev && build"
 	},
 	"build": {},
