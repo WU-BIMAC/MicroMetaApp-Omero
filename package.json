@@ -15,9 +15,9 @@
 	"scripts": {
 		"test": "node scripts/test.js",
 		"build-internal": "gulp build-internal",
-		"build": "gulp build-dev && gulp build && .\\deploy_build.bat",
-		"dev": "gulp dev && ./deploy_build.bat",
-		"dist": "gulp build-dev && gulp build"
+		"prod": "gulp build",
+		"dev": "gulp dev",
+		"build": "gulp build-dev && gulp build"
 	},
 	"build": {},
 	"eslintConfig": {
@@ -30,18 +30,18 @@
 		"not op_mini all"
 	],
 	"devDependencies": {
-		"@babel/core": "^7.4.5",
-		"@babel/preset-env": "^7.4.5",
+		"@babel/core": "^7.5.4",
+		"@babel/preset-env": "^7.5.4",
 		"@babel/preset-react": "^7.0.0",
-		"babel-eslint": "^10.0.1",
+		"babel-eslint": "^10.0.2",
 		"babel-loader": "^8.0.6",
 		"babel-preset-react-app": "^9.0.0",
 		"case-sensitive-paths-webpack-plugin": "2.2.0",
 		"css-loader": "2.1.1",
 		"dotenv": "8.0.0",
 		"dotenv-expand": "5.1.0",
-		"electron": "^5.0.2",
-		"electron-builder": "^20.41.0",
+		"electron": "^5.0.7",
+		"electron-builder": "^20.44.4",
 		"eslint": "5.16.0",
 		"eslint-config-react-app": "^4.0.1",
 		"eslint-loader": "2.1.2",
@@ -69,8 +69,8 @@
 		"rm-local-modules": "0.0.2",
 		"sass-loader": "7.1.0",
 		"style-loader": "0.23.1",
-		"webpack": "^4.32.2",
-		"webpack-cli": "^3.3.2",
+		"webpack": "^4.36.1",
+		"webpack-cli": "^3.3.6",
 		"workbox-webpack-plugin": "4.3.1"
 	},
 	"jest": {
