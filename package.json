@@ -1,6 +1,6 @@
 {
 	"name": "4dn-microscopy-metadata-tool-omero",
-	"version": "0.0.7-1",
+	"version": "0.0.9-1",
 	"private": true,
 	"main": "./main.js",
 	"publishConfig": {
@@ -17,7 +17,7 @@
 		"build-internal": "gulp build-internal",
 		"build": "gulp build-dev && gulp build && .\\deploy_build.bat",
 		"dev": "gulp dev && ./deploy_build.bat",
-		"dist": "gulp build-dev && build"
+		"dist": "gulp build-dev && gulp build"
 	},
 	"build": {},
 	"eslintConfig": {
