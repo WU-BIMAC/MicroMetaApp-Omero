@@ -1,23 +1,24 @@
 {
 	"name": "4dn-microscopy-metadata-tool-omero",
-	"version": "0.0.15-1",
+	"version": "0.0.16-1",
 	"private": true,
 	"main": "./main.js",
 	"publishConfig": {
 		"access": "restricted"
 	},
 	"dependencies": {
-		"4dn-microscopy-metadata-tool": "file:../4DNMicroscopyMetadataToolReact",
-		"react": "^16.8.6",
-		"react-bootstrap": "^1.0.0-beta.8",
-		"react-dom": "^16.8.6"
+		"4dn-microscopy-metadata-tool": "github:WU-BIMAC/4DNMicroscopyMetadataToolReact#master",
+		"react": "^16.11.0",
+		"react-bootstrap": "^1.0.0-beta.14",
+		"react-dom": "^16.11.0"
 	},
 	"scripts": {
 		"test": "node scripts/test.js",
 		"build-internal": "gulp build-internal",
 		"prod": "gulp build",
 		"dev": "gulp dev",
-		"build": "gulp build-dev && gulp build"
+		"build": "gulp build-dev && gulp build",
+		"update-mma": "npm uninstall 4dn-microscopy-metadata-tool && npm cache clean --force && npm install 4dn-microscopy-metadata-tool@github:WU-BIMAC/4DNMicroscopyMetadataToolReact#master --save"
 	},
 	"build": {},
 	"eslintConfig": {
@@ -30,20 +31,17 @@
 		"not op_mini all"
 	],
 	"devDependencies": {
-		"@babel/core": "^7.5.4",
-		"@babel/preset-env": "^7.5.4",
-		"@babel/preset-react": "^7.0.0",
-		"babel-eslint": "^10.0.2",
+		"@babel/core": "^7.6.4",
+		"@babel/preset-env": "^7.6.3",
+		"@babel/preset-react": "^7.6.3",
+		"babel-eslint": "^10.0.3",
 		"babel-loader": "^8.0.6",
-		"babel-preset-react-app": "^9.0.0",
+		"babel-preset-react-app": "^9.0.2",
 		"case-sensitive-paths-webpack-plugin": "2.2.0",
 		"css-loader": "2.1.1",
 		"dotenv": "8.0.0",
 		"dotenv-expand": "5.1.0",
-		"electron": "^5.0.7",
-		"electron-builder": "^20.44.4",
 		"eslint": "5.16.0",
-		"eslint-config-react-app": "^4.0.1",
 		"eslint-loader": "2.1.2",
 		"eslint-plugin-flowtype": "3.9.1",
 		"eslint-plugin-import": "2.17.3",
@@ -65,12 +63,13 @@
 		"postcss-loader": "3.0.0",
 		"postcss-preset-env": "6.6.0",
 		"postcss-safe-parser": "4.0.1",
-		"react-dev-utils": "^9.0.1",
+		"react-dev-utils": "^9.1.0",
 		"rm-local-modules": "0.0.2",
 		"sass-loader": "7.1.0",
 		"style-loader": "0.23.1",
-		"webpack": "^4.36.1",
-		"webpack-cli": "^3.3.6",
+		"typescript": "^3.6.4",
+		"webpack": "^4.41.2",
+		"webpack-cli": "^3.3.9",
 		"workbox-webpack-plugin": "4.3.1"
 	},
 	"jest": {
