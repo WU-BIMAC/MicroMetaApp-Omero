@@ -15,7 +15,7 @@ let setDev = done => {
 
 function webpackOnBuild(done) {
 	let start = Date.now();
-	return function (err, stats) {
+	return function(err, stats) {
 		if (err) {
 			throw new PluginError("webpack", err);
 		}
@@ -33,20 +33,22 @@ function webpackOnBuild(done) {
 	};
 }
 
-let doWebpack = cb => {
+let buildWebpack = cb => {
 	let webpackConfig = require("./webpack.config.js");
 	webpack(webpackConfig).run(webpackOnBuild(cb));
 };
 
-let watch = () => {
+let watchWebpack = () => {
 	let webpackConfig = require("./webpack.config.js");
 	webpack(webpackConfig).watch(300, webpackOnBuild());
 };
 
-const devSlow = gulp.series(setDev, doWebpack, watch);
-const build = gulp.series(setProduction, doWebpack);
-const buildDev = gulp.series(setDev, doWebpack);
+const dev = gulp.series(setDev, buildWebpack, watchWebpack);
+const buildProd = gulp.series(setProduction, buildWebpack);
+const buildDev = gulp.series(setDev, buildWebpack);
+const build = gulp.series(buildProd, buildDev);
 
-gulp.task("dev", devSlow);
-gulp.task("build", build);
+gulp.task("dev", dev);
+gulp.task("build-prod", buildProd);
 gulp.task("build-dev", buildDev);
+gulp.task("build", build);
