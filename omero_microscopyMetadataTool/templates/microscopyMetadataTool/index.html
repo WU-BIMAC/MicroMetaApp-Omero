@@ -10,7 +10,12 @@
 			src="https://unpkg.com/react-dom@16.8.4/umd/react-dom.development.js"
 		></script>
 		<script src="{% static 'microscopyMetadataTool/js/MicroscopyMetadataToolOmero.dev.js' %}"></script>
-
+		<link
+			crossorigin
+			rel="stylesheet bootstrap"
+			type="text/css"
+			href="https://raw.githubusercontent.com/WU-BIMAC/4DNMicroscopyMetadataToolReact/master/public/style.css"
+		/>
 		<link
 			crossorigin
 			rel="stylesheet bootstrap"
@@ -100,7 +105,8 @@
 						React.createElement(MicroscopyMetadataToolApp, {
 							height: dims.height,
 							width: dims.width,
-							imagesPath: "{% static 'microscopyMetadataTool/images/' %}",
+							imagesPathPGN: "{% static 'microscopyMetadataTool/images/png' %}",
+							imagesPathSVG: "{% static 'microscopyMetadataTool/images/svg' %}",
 							key: "my-app",
 							onLoadSchema: function(complete) {
 								// Maybe some UI to select something...
