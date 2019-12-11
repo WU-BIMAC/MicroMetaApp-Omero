@@ -111,8 +111,10 @@
 						React.createElement(MicroscopyMetadataToolApp, {
 							height: dims.height,
 							width: dims.width,
-							imagesPathPNG: "{% static 'microscopyMetadataTool/images/png' %}",
-							imagesPathSVG: "{% static 'microscopyMetadataTool/images/svg' %}",
+							imagesPathPNG:
+								"{% static 'microscopyMetadataTool/images/png/' %}",
+							imagesPathSVG:
+								"{% static 'microscopyMetadataTool/images/svg/' %}",
 							key: "my-app",
 							onLoadSchema: function(complete) {
 								// Maybe some UI to select something...
