@@ -2,6 +2,10 @@
 
 #copy over html,css,js and templates
 echo "Deploying built resources to web app directory..."
+mkdir -p omero_microscopyMetadataTool/static/microscopyMetadataTool/css
+cp public/fontStyle.css omero_microscopyMetadataTool/static/microscopyMetadataTool/css/
+cp node_modules/4dn-microscopy-metadata-tool/public/style.css omero_microscopyMetadataTool/static/microscopyMetadataTool/css/
+
 mkdir -p omero_microscopyMetadataTool/static/microscopyMetadataTool/js
 cp dist/MicroscopyMetadataToolOmero.dev.js omero_microscopyMetadataTool/static/microscopyMetadataTool/js/
 
