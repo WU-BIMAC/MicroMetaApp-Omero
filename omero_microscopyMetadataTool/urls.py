@@ -1,10 +1,10 @@
 
 from . import views
-from django.conf.urls import url, patterns
+from django.conf.urls import url
 
-urlpatterns = patterns(
+urlpatterns = [
 
-    'django.views.generic.simple',
+    # url('django.views.generic.simple'),
 
     url(r'^$', views.index, name='microscopyMetadataTool_index'),
 
@@ -13,4 +13,4 @@ urlpatterns = patterns(
 
     url(r'^list_microscopes/$', views.list_microscopes,
         name='microscopyMetadataTool_list_microscopes'),
-)
+]
