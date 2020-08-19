@@ -53,7 +53,7 @@ def list_microscopes(request, conn=None, **kwargs):
         fa_wrapper = FileAnnotationWrapper(conn, file_ann)
         file_wrapper = fa_wrapper.getFile()
         print('file_wrapper', file_wrapper)
-        file_data = "".join(list(file_wrapper.getFileInChunks()))
+        file_data = b"".join(list(file_wrapper.getFileInChunks()))
         print('file_data', file_data)
         json_data = json.loads(file_data)
         # date = datetime.fromtimestamp(unwrap(fa['time'])/1000)
