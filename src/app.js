@@ -12,6 +12,7 @@ export default class MicroscopyMetadataToolOmero extends React.PureComponent {
 				width={this.props.width}
 				height={this.props.height}
 				onLoadSchema={this.props.onLoadSchema}
+				onLoadDimensions={this.props.onLoadDimensions}
 				onLoadMicroscopes={this.props.onLoadMicroscopes}
 				onSaveMicroscope={this.props.onSaveMicroscope}
 				imagesPathPNG={this.props.imagesPathPNG}

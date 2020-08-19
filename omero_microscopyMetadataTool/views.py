@@ -46,29 +46,29 @@ def list_microscopes(request, conn=None, **kwargs):
 
     qs = conn.getQueryService()
     # file_anns = qs.projection(q, params, conn.SERVICE_OPTS)
-    file_anns = qs.findAllByQuery(q, params, conn.SERVICE_OPTS)
+    file_annotations = qs.findAllByQuery(q, params, conn.SERVICE_OPTS)
     rsp = []
-    for file_ann in file_anns:
-    print('fa', file_ann)
-    fa_wrapper = FileAnnotationWrapper(conn, file_ann)
-    file_wrapper = fa_wrapper.getFile()
-    print('file_wrapper', file_wrapper)
-    file_data = "".join(list(file_wrapper.getFileInChunks()))
-    print('file_data', file_data)
-    json_data = json.loads(file_data)
-    # date = datetime.fromtimestamp(unwrap(fa['time'])/1000)
-    # first_name = unwrap(file_ann)
-    # last_name = unwrap(fa['lastName'])
-    fig_file = {
-        'id': file_ann.id.val,
-        # 'name': unwrap(fa['name']),
-        # 'description': unwrap(fa['desc']),
-        # 'ownerFullName': "%s %s" % (first_name, last_name),
-        # 'creationDate': time.mktime(date.timetuple()),
-        # 'canEdit': fa['obj_details_permissions'].get('canEdit'),
-        'microscope': json_data
-    }
-    rsp.append(fig_file)
+    for file_ann in file_annotations:
+        print('fa', file_ann)
+        fa_wrapper = FileAnnotationWrapper(conn, file_ann)
+        file_wrapper = fa_wrapper.getFile()
+        print('file_wrapper', file_wrapper)
+        file_data = "".join(list(file_wrapper.getFileInChunks()))
+        print('file_data', file_data)
+        json_data = json.loads(file_data)
+        # date = datetime.fromtimestamp(unwrap(fa['time'])/1000)
+        # first_name = unwrap(file_ann)
+        # last_name = unwrap(fa['lastName'])
+        fig_file = {
+            'id': file_ann.id.val,
+            # 'name': unwrap(fa['name']),
+            # 'description': unwrap(fa['desc']),
+            # 'ownerFullName': "%s %s" % (first_name, last_name),
+            # 'creationDate': time.mktime(date.timetuple()),
+            # 'canEdit': fa['obj_details_permissions'].get('canEdit'),
+            'microscope': json_data
+        }
+        rsp.append(fig_file)
 
     return JsonResponse({'data': rsp})
 

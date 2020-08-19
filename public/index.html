@@ -66,7 +66,7 @@
       To create a production bundle, use `npm run build` or `yarn build`.
 		-->
 		<script>
-			(function() {
+			(function () {
 				// Parent app could be required to handle detecting window resize
 				var MicroscopyMetadataToolApp =
 					window.MicroscopyMetadataToolOmero.default;
@@ -76,14 +76,14 @@
 				function render() {
 					let dims = {
 						width: window.innerWidth,
-						height: window.innerHeight
+						height: window.innerHeight,
 					};
 					ReactDOM.render(
 						React.createElement(MicroscopyMetadataToolApp, {
 							height: dims.height,
 							width: dims.width,
 							key: "my-app",
-							onLoadSchema: function(complete) {
+							onLoadSchema: function (complete) {
 								// Maybe some UI to select something...
 								// Not all browsers have `window.fetch`, used for demoing purposes.
 								// Also, window.fetch requires HTTP so we getting this from GitHub... lol
@@ -91,26 +91,42 @@
 									.fetch(
 										"https://raw.githubusercontent.com/WU-BIMAC/4DNMetadataSchemaXSD2JSONConverter/master/fullSchemaV3.json"
 									)
-									.then(function(resp) {
+									.then(function (resp) {
 										console.log(resp);
 										return resp.text();
 									})
-									.then(function(respText) {
+									.then(function (respText) {
 										var schema = JSON.parse(respText);
 										complete(schema);
 									});
 							},
-							onLoadMicroscopes: function(complete) {
+							onLoadDimensions: function (complete) {
+								// Maybe some UI to select something...
+								// Not all browsers have `window.fetch`, used for demoing purposes.
+								// Also, window.fetch requires HTTP so we getting this from GitHub... lol
+								window
+									.fetch(
+										"https://raw.githubusercontent.com/WU-BIMAC/4DNMetadataSchemaXSD2JSONConverter/master/dimensions/MicroscopeDimensions.json"
+									)
+									.then(function (resp) {
+										console.log(resp);
+										return resp.text();
+									})
+									.then(function (respText) {
+										var dimensions = JSON.parse(respText);
+										complete(dimensions);
+									});
+							},
+							onLoadMicroscopes: function (complete) {
 								let microscopesDB = {};
 								complete(microscopesDB);
 							},
-							onSaveMicroscope: function(microscope, complete) {
-								// Do some stuff... show pane for people to browse/select schema.. etc.
-								setTimeout(function() {
+							onSaveMicroscope: function (microscope, complete) {
+								setTimeout(function () {
 									console.log(microscope);
 									complete(microscope.Name);
 								});
-							}
+							},
 						}),
 						document.getElementById("root")
 					);

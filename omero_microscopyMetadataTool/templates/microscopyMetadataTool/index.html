@@ -95,7 +95,7 @@
 				return cookieValue;
 			}
 
-			(function() {
+			(function () {
 				// Parent app could be required to handle detecting window resize
 				var MicroscopyMetadataToolApp =
 					window.MicroscopyMetadataToolOmero.default;
@@ -105,7 +105,7 @@
 				function render() {
 					let dims = {
 						width: window.innerWidth,
-						height: window.innerHeight
+						height: window.innerHeight,
 					};
 					ReactDOM.render(
 						React.createElement(MicroscopyMetadataToolApp, {
@@ -116,7 +116,7 @@
 							imagesPathSVG:
 								"{% static 'microscopyMetadataTool/images/svg/' %}",
 							key: "my-app",
-							onLoadSchema: function(complete) {
+							onLoadSchema: function (complete) {
 								// Maybe some UI to select something...
 								// Not all browsers have `window.fetch`, used for demoing purposes.
 								// Also, window.fetch requires HTTP so we getting this from GitHub... lol
@@ -124,24 +124,41 @@
 									.fetch(
 										"https://raw.githubusercontent.com/WU-BIMAC/4DNMetadataSchemaXSD2JSONConverter/master/fullSchemaV3.json"
 									)
-									.then(function(resp) {
+									.then(function (resp) {
 										console.log(resp);
 										return resp.text();
 									})
-									.then(function(respText) {
+									.then(function (respText) {
 										var schema = JSON.parse(respText);
 										complete(schema);
 									});
 							},
-							onLoadMicroscopes: function(complete) {
+							onLoadDimensions: function (complete) {
+								// Maybe some UI to select something...
+								// Not all browsers have `window.fetch`, used for demoing purposes.
+								// Also, window.fetch requires HTTP so we getting this from GitHub... lol
+								window
+									.fetch(
+										"https://raw.githubusercontent.com/WU-BIMAC/4DNMetadataSchemaXSD2JSONConverter/master/dimensions/MicroscopeDimensions.json"
+									)
+									.then(function (resp) {
+										console.log(resp);
+										return resp.text();
+									})
+									.then(function (respText) {
+										var dimensions = JSON.parse(respText);
+										complete(dimensions);
+									});
+							},
+							onLoadMicroscopes: function (complete) {
 								let microscopesDB = {};
 								fetch("{% url 'microscopyMetadataTool_list_microscopes' %}")
-									.then(function(response) {
+									.then(function (response) {
 										return response.json();
 									})
-									.then(function(data) {
+									.then(function (data) {
 										console.log(data.data);
-										data.data.forEach(function(element) {
+										data.data.forEach(function (element) {
 											var m = element.microscope;
 											microscopesDB[m.Name + "_" + m.ID] = m;
 										});
@@ -149,7 +166,7 @@
 										complete(microscopesDB);
 									});
 							},
-							onSaveMicroscope: function(microscope, complete) {
+							onSaveMicroscope: function (microscope, complete) {
 								console.log("microscope", microscope);
 								var csrftoken = getCookie("csrftoken");
 								console.log("csrftoken", csrftoken);
@@ -161,18 +178,18 @@
 									headers: {
 										Accept: "application/json",
 										"Content-Type": "application/json",
-										"X-CSRFToken": csrftoken
+										"X-CSRFToken": csrftoken,
 									},
-									body: JSON.stringify({ microscope: microscope })
+									body: JSON.stringify({ microscope: microscope }),
 								})
-									.then(function(response) {
+									.then(function (response) {
 										return response.json();
 									})
-									.then(function(data) {
+									.then(function (data) {
 										console.log(data);
 										complete(microscope.Name);
 									});
-							}
+							},
 						}),
 						document.getElementById("root")
 					);
