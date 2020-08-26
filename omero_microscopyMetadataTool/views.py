@@ -2,7 +2,7 @@
 from omeroweb.webclient.decorators import login_required
 from django.shortcuts import render
 from omero.rtypes import wrap, unwrap
-from io import StringIO
+from io import StringIO, BytesIO
 from django.http import JsonResponse
 import json
 from omero.model import FileAnnotationI, OriginalFileI
@@ -55,7 +55,7 @@ def list_microscopes(request, conn=None, **kwargs):
         print('file_wrapper', file_wrapper)
         file_data = b"".join(list(file_wrapper.getFileInChunks()))
         print('file_data', file_data)
-        json_data = json.loads(file_data)
+        json_data = json.loads(file_data.decode("utf-8"))
         # date = datetime.fromtimestamp(unwrap(fa['time'])/1000)
         # first_name = unwrap(file_ann)
         # last_name = unwrap(fa['lastName'])
@@ -96,8 +96,8 @@ def save_microscope(request, conn=None, **kwargs):
 
     file_data = json.dumps(microscope_json)
     file_size = len(file_data)
-    f = StringIO()
-    f.write(file_data)
+    f = BytesIO()
+    f.write(file_data.encode("utf-8"))
     orig_file = conn.createOriginalFileFromFileObj(
         f, '', file_name, file_size, mimetype="application/json")
     fa = FileAnnotationI()

@@ -170,7 +170,6 @@
 								console.log("microscope", microscope);
 								var csrftoken = getCookie("csrftoken");
 								console.log("csrftoken", csrftoken);
-
 								fetch("{% url 'microscopyMetadataTool_save_microscope' %}", {
 									credentials: "include",
 									method: "POST",
