@@ -10,7 +10,7 @@
 
 # production
 /build
-omero_microscopyMetadataTool/static/
+omero_microMetaApp/static/
 
 # build
 /dist

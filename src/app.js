@@ -1,6 +1,6 @@
-import MicroscopyMetadataTool from "4dn-microscopy-metadata-tool";
+import MicroscopyMetadataTool from "micro-meta-app-react";
 
-export default class MicroscopyMetadataToolOmero extends React.PureComponent {
+export default class MicroMetaAppOmero extends React.PureComponent {
 	constructor(props) {
 		super(props);
 	}
@@ -8,7 +8,7 @@ export default class MicroscopyMetadataToolOmero extends React.PureComponent {
 	//onSaveMicroscope = { props.onWorkingDirectorySave }
 	render() {
 		return (
-			<MicroscopyMetadataTool
+			<MicroMetaAppReact
 				width={this.props.width}
 				height={this.props.height}
 				onLoadSchema={this.props.onLoadSchema}

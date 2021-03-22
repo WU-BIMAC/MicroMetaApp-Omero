@@ -9,18 +9,18 @@
 			crossorigin
 			src="https://unpkg.com/react-dom@16.8.4/umd/react-dom.development.js"
 		></script>
-		<script src="{% static 'microscopyMetadataTool/js/MicroscopyMetadataToolOmero.dev.js' %}"></script>
+		<script src="{% static 'microMetaAppOmero/js/MicroMetaAppOmero.dev.js' %}"></script>
 		<link
 			crossorigin
 			rel="stylesheet micro-meta-app"
 			type="text/css"
-			href="{% static 'microscopyMetadataTool/css/style-new.css' %}"
+			href="{% static 'microMetaAppOmero/css/style-new.css' %}"
 		/>
 		<link
 			crossorigin
 			rel="stylesheet font"
 			type="text/css"
-			href="{% static 'microscopyMetadataTool/css/fontStyle.css' %}"
+			href="{% static 'microMetaAppOmero/css/fontStyle.css' %}"
 		/>
 		<link
 			crossorigin
@@ -62,7 +62,7 @@
         work correctly both with client-side routing and a non-root public URL.
         Learn how to configure a non-root public URL by running `npm run build`.
     -->
-		<title>4DN Microscopy Metadata Tool</title>
+		<title>Micro Meta App</title>
 	</head>
 	<body>
 		<noscript>You need to enable JavaScript to run this app.</noscript>
@@ -97,8 +97,8 @@
 
 			(function () {
 				// Parent app could be required to handle detecting window resize
-				var MicroscopyMetadataToolApp =
-					window.MicroscopyMetadataToolOmero.default;
+				var microMetaApp =
+					window.MicroMetaAppOmero.default;
 
 				//var debouncedRender = _.debounce(render, 500);
 
@@ -108,13 +108,13 @@
 						height: window.innerHeight,
 					};
 					ReactDOM.render(
-						React.createElement(MicroscopyMetadataToolApp, {
+						React.createElement(microMetaApp, {
 							height: dims.height,
 							width: dims.width,
 							imagesPathPNG:
-								"{% static 'microscopyMetadataTool/images/png/' %}",
+								"{% static 'microMetaAppOmero/images/png/' %}",
 							imagesPathSVG:
-								"{% static 'microscopyMetadataTool/images/svg/' %}",
+								"{% static 'microMetaAppOmero/images/svg/' %}",
 							key: "my-app",
 							onLoadSchema: function (complete) {
 								// Maybe some UI to select something...
@@ -152,7 +152,7 @@
 							},
 							onLoadMicroscopes: function (complete) {
 								let microscopesDB = {};
-								fetch("{% url 'microscopyMetadataTool_list_microscopes' %}")
+								fetch("{% url 'microMetaAppOmero_list_microscopes' %}")
 									.then(function (response) {
 										return response.json();
 									})
@@ -170,7 +170,7 @@
 								console.log("microscope", microscope);
 								var csrftoken = getCookie("csrftoken");
 								console.log("csrftoken", csrftoken);
-								fetch("{% url 'microscopyMetadataTool_save_microscope' %}", {
+								fetch("{% url 'microMetaAppOmero_save_microscope' %}", {
 									credentials: "include",
 									method: "POST",
 									mode: "same-origin",

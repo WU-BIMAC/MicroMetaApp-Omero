@@ -9,7 +9,7 @@
 			crossorigin
 			src="https://unpkg.com/react-dom@16.8.4/umd/react-dom.development.js"
 		></script>
-		<script src="./../dist/MicroscopyMetadataToolOmero.dev.js"></script>
+		<script src="./../dist/MicroMetaAppOmero.dev.js"></script>
 		<link rel="stylesheet" type="text/css" href="style.css" />
 		<link
 			crossorigin
@@ -50,7 +50,7 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-		<title>4DN Micro-Meta App</title>
+		<title>Micro Meta App</title>
 	</head>
 	<body>
 		<noscript>You need to enable JavaScript to run this app.</noscript>
@@ -68,8 +68,8 @@
 		<script>
 			(function () {
 				// Parent app could be required to handle detecting window resize
-				var MicroscopyMetadataToolApp =
-					window.MicroscopyMetadataToolOmero.default;
+				var microMetaApp =
+					window.MicroMetaAppOmero.default;
 
 				//var debouncedRender = _.debounce(render, 500);
 
@@ -79,7 +79,7 @@
 						height: window.innerHeight,
 					};
 					ReactDOM.render(
-						React.createElement(MicroscopyMetadataToolApp, {
+						React.createElement(microMetaApp, {
 							height: dims.height,
 							width: dims.width,
 							key: "my-app",
