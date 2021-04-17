@@ -19,7 +19,7 @@ module.exports = {
 	output: {
 		library: "MicroMetaAppOmero", // Unsure if best naming convention
 		libraryTarget: "umd",
-		path: path.resolve("./dist"),
+		path: path.resolve("./build"),
 		filename:
 			mode === "production"
 				? "MicroMetaAppOmero.min.js"
