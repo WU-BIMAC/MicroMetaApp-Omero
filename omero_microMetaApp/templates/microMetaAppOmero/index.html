@@ -1,34 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<script
-			crossorigin
-			src="https://unpkg.com/react@16.8.4/umd/react.development.js"
-		></script>
-		<script
-			crossorigin
-			src="https://unpkg.com/react-dom@16.8.4/umd/react-dom.development.js"
-		></script>
-		<script src="{% static 'microMetaAppOmero/js/MicroMetaAppOmero.dev.js' %}"></script>
-		<link
-			crossorigin
-			rel="stylesheet micro-meta-app"
-			type="text/css"
-			href="{% static 'microMetaAppOmero/css/style-new.css' %}"
-		/>
-		<link
-			crossorigin
-			rel="stylesheet font"
-			type="text/css"
-			href="{% static 'microMetaAppOmero/css/fontStyle.css' %}"
-		/>
-		<link
-			crossorigin
-			rel="stylesheet bootstrap"
-			type="text/css"
-			href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css"
-		/>
-		<!-- <link
+
+<head>
+	<script crossorigin src="https://unpkg.com/react@16.8.4/umd/react.development.js"></script>
+	<script crossorigin src="https://unpkg.com/react-dom@16.8.4/umd/react-dom.development.js"></script>
+	<script src="{% static 'microMetaAppOmero/js/MicroMetaAppOmero.dev.js' %}"></script>
+	<link crossorigin rel="stylesheet micro-meta-app" type="text/css"
+		href="{% static 'microMetaAppOmero/css/style-new.css' %}" />
+	<link crossorigin rel="stylesheet font" type="text/css" href="{% static 'microMetaAppOmero/css/fontStyle.css' %}" />
+	<link crossorigin rel="stylesheet bootstrap" type="text/css"
+		href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css" />
+	<!-- <link
 			crossorigin
 			rel="stylesheet rc-tabs"
 			type="text/css"
@@ -40,20 +22,17 @@
 			type="text/css"
 			href="https://unpkg.com/react-resizable/css/styles.css"
 		/> -->
-		<!-- <link rel="stylesheet" type="text/css" href="{% static 'microscopyMetadataTool/css/style.css' %}" /> -->
-		<meta charset="utf-8" />
-		<link rel="shortcut icon" href="./favicon.ico" />
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1, shrink-to-fit=no"
-		/>
-		<meta name="theme-color" content="#000000" />
-		<!--
+	<!-- <link rel="stylesheet" type="text/css" href="{% static 'microscopyMetadataTool/css/style.css' %}" /> -->
+	<meta charset="utf-8" />
+	<link rel="shortcut icon" href="./favicon.ico" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<meta name="theme-color" content="#000000" />
+	<!--
         manifest.json provides metadata used when your web app is installed on a
         user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
-		<link rel="manifest" href="./manifest.json" />
-		<!--
+	<link rel="manifest" href="./manifest.json" />
+	<!--
         Notice the use of %PUBLIC_URL% in the tags above.
         It will be replaced with the URL of the `public` folder during the build.
         Only files inside the `public` folder can be referenced from the HTML.
@@ -62,12 +41,13 @@
         work correctly both with client-side routing and a non-root public URL.
         Learn how to configure a non-root public URL by running `npm run build`.
     -->
-		<title>Micro Meta App</title>
-	</head>
-	<body>
-		<noscript>You need to enable JavaScript to run this app.</noscript>
-		<div id="root"></div>
-		<!--
+	<title>Micro Meta App</title>
+</head>
+
+<body>
+	<noscript>You need to enable JavaScript to run this app.</noscript>
+	<div id="root"></div>
+	<!--
         This HTML file is a template.
         If you open it directly in the browser, you will see an empty page.
 
@@ -77,126 +57,127 @@
         To begin the development, run `npm start` or `yarn start`.
         To create a production bundle, use `npm run build` or `yarn build`.
         -->
-		<script>
-			function getCookie(name) {
-				var cookieValue = null;
-				if (document.cookie && document.cookie !== "") {
-					var cookies = document.cookie.split(";");
-					for (var i = 0; i < cookies.length; i++) {
-						var cookie = cookies[i].trim();
-						if (cookie.substring(0, name.length + 1) === name + "=") {
-							cookieValue = decodeURIComponent(
-								cookie.substring(name.length + 1)
-							);
-							break;
-						}
+	<script>
+		function getCookie(name) {
+			var cookieValue = null;
+			if (document.cookie && document.cookie !== "") {
+				var cookies = document.cookie.split(";");
+				for (var i = 0; i < cookies.length; i++) {
+					var cookie = cookies[i].trim();
+					if (cookie.substring(0, name.length + 1) === name + "=") {
+						cookieValue = decodeURIComponent(
+							cookie.substring(name.length + 1)
+						);
+						break;
 					}
 				}
-				return cookieValue;
+			}
+			return cookieValue;
+		}
+
+		(function () {
+			// Parent app could be required to handle detecting window resize
+			var microMetaApp =
+				window.MicroMetaAppOmero.default;
+
+			//var debouncedRender = _.debounce(render, 500);
+
+			function render() {
+				let dims = {
+					width: window.innerWidth,
+					height: window.innerHeight,
+				};
+				ReactDOM.render(
+					React.createElement(microMetaApp, {
+						height: dims.height,
+						width: dims.width,
+						imagesPathPNG:
+							"{% static 'microMetaAppOmero/images/png/' %}",
+						imagesPathSVG:
+							"{% static 'microMetaAppOmero/images/svg/' %}",
+						key: "my-app",
+						onLoadSchema: function (complete) {
+							// Maybe some UI to select something...
+							// Not all browsers have `window.fetch`, used for demoing purposes.
+							// Also, window.fetch requires HTTP so we getting this from GitHub... lol
+							window
+								.fetch(
+									"https://raw.githubusercontent.com/WU-BIMAC/4DNMetadataSchemaXSD2JSONConverter/master/fullSchemaV3.json"
+								)
+								.then(function (resp) {
+									console.log(resp);
+									return resp.text();
+								})
+								.then(function (respText) {
+									var schema = JSON.parse(respText);
+									complete(schema);
+								});
+						},
+						onLoadDimensions: function (complete) {
+							// Maybe some UI to select something...
+							// Not all browsers have `window.fetch`, used for demoing purposes.
+							// Also, window.fetch requires HTTP so we getting this from GitHub... lol
+							window
+								.fetch(
+									"https://raw.githubusercontent.com/WU-BIMAC/4DNMetadataSchemaXSD2JSONConverter/master/dimensions/MicroscopeDimensions.json"
+								)
+								.then(function (resp) {
+									console.log(resp);
+									return resp.text();
+								})
+								.then(function (respText) {
+									var dimensions = JSON.parse(respText);
+									complete(dimensions);
+								});
+						},
+						onLoadMicroscopes: function (complete) {
+							let microscopesDB = {};
+							fetch("{% url 'microMetaAppOmero_list_microscopes' %}")
+								.then(function (response) {
+									return response.json();
+								})
+								.then(function (data) {
+									console.log(data.data);
+									data.data.forEach(function (element) {
+										var m = element.microscope;
+										microscopesDB[m.Name + "_" + m.ID] = m;
+									});
+
+									complete(microscopesDB);
+								});
+						},
+						onSaveMicroscope: function (microscope, complete) {
+							console.log("microscope", microscope);
+							var csrftoken = getCookie("csrftoken");
+							console.log("csrftoken", csrftoken);
+							fetch("{% url 'microMetaAppOmero_save_microscope' %}", {
+								credentials: "include",
+								method: "POST",
+								mode: "same-origin",
+								headers: {
+									Accept: "application/json",
+									"Content-Type": "application/json",
+									"X-CSRFToken": csrftoken,
+								},
+								body: JSON.stringify({ microscope: microscope }),
+							})
+								.then(function (response) {
+									return response.json();
+								})
+								.then(function (data) {
+									console.log(data);
+									complete(microscope.Name);
+								});
+						},
+					}),
+					document.getElementById("root")
+				);
 			}
 
-			(function () {
-				// Parent app could be required to handle detecting window resize
-				var microMetaApp =
-					window.MicroMetaAppOmero.default;
+			window.addEventListener("resize", render);
+			render();
+		})();
+	</script>
+</body>
 
-				//var debouncedRender = _.debounce(render, 500);
-
-				function render() {
-					let dims = {
-						width: window.innerWidth,
-						height: window.innerHeight,
-					};
-					ReactDOM.render(
-						React.createElement(microMetaApp, {
-							height: dims.height,
-							width: dims.width,
-							imagesPathPNG:
-								"{% static 'microMetaAppOmero/images/png/' %}",
-							imagesPathSVG:
-								"{% static 'microMetaAppOmero/images/svg/' %}",
-							key: "my-app",
-							onLoadSchema: function (complete) {
-								// Maybe some UI to select something...
-								// Not all browsers have `window.fetch`, used for demoing purposes.
-								// Also, window.fetch requires HTTP so we getting this from GitHub... lol
-								window
-									.fetch(
-										"https://raw.githubusercontent.com/WU-BIMAC/4DNMetadataSchemaXSD2JSONConverter/master/fullSchemaV3.json"
-									)
-									.then(function (resp) {
-										console.log(resp);
-										return resp.text();
-									})
-									.then(function (respText) {
-										var schema = JSON.parse(respText);
-										complete(schema);
-									});
-							},
-							onLoadDimensions: function (complete) {
-								// Maybe some UI to select something...
-								// Not all browsers have `window.fetch`, used for demoing purposes.
-								// Also, window.fetch requires HTTP so we getting this from GitHub... lol
-								window
-									.fetch(
-										"https://raw.githubusercontent.com/WU-BIMAC/4DNMetadataSchemaXSD2JSONConverter/master/dimensions/MicroscopeDimensions.json"
-									)
-									.then(function (resp) {
-										console.log(resp);
-										return resp.text();
-									})
-									.then(function (respText) {
-										var dimensions = JSON.parse(respText);
-										complete(dimensions);
-									});
-							},
-							onLoadMicroscopes: function (complete) {
-								let microscopesDB = {};
-								fetch("{% url 'microMetaAppOmero_list_microscopes' %}")
-									.then(function (response) {
-										return response.json();
-									})
-									.then(function (data) {
-										console.log(data.data);
-										data.data.forEach(function (element) {
-											var m = element.microscope;
-											microscopesDB[m.Name + "_" + m.ID] = m;
-										});
-
-										complete(microscopesDB);
-									});
-							},
-							onSaveMicroscope: function (microscope, complete) {
-								console.log("microscope", microscope);
-								var csrftoken = getCookie("csrftoken");
-								console.log("csrftoken", csrftoken);
-								fetch("{% url 'microMetaAppOmero_save_microscope' %}", {
-									credentials: "include",
-									method: "POST",
-									mode: "same-origin",
-									headers: {
-										Accept: "application/json",
-										"Content-Type": "application/json",
-										"X-CSRFToken": csrftoken,
-									},
-									body: JSON.stringify({ microscope: microscope }),
-								})
-									.then(function (response) {
-										return response.json();
-									})
-									.then(function (data) {
-										console.log(data);
-										complete(microscope.Name);
-									});
-							},
-						}),
-						document.getElementById("root")
-					);
-				}
-
-				window.addEventListener("resize", render);
-				render();
-			})();
-		</script>
-	</body>
 </html>
