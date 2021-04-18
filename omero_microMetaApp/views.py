@@ -18,7 +18,7 @@ JSON_FILEANN_NS = "micro-meta-app.json"
 @login_required()
 def index(request, conn=None, **kwargs):
 
-    return render(request, 'microscopyMetadataTool/index.html')
+    return render(request, 'microMetaAppOmero/index.html')
 
 
 @login_required()
