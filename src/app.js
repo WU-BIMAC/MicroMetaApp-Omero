@@ -1,4 +1,4 @@
-import MicroscopyMetadataTool from "micro-meta-app-react";
+import MicroMetaAppReact from "micro-meta-app-react";
 
 export default class MicroMetaAppOmero extends React.PureComponent {
 	constructor(props) {
