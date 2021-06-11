@@ -36,6 +36,8 @@ Go the folder where you downloaded the package and run
 ```
 pip install -e .
 ```
+Or if you prefer a manual installation unpack the file in your pluging folder (that should be added to your python path).
+
 Add the plugin to your omero with
 ```
 omero config append omero.web.apps '"omero_microMetaApp"'
