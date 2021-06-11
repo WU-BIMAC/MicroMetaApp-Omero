@@ -40,7 +40,7 @@ Add the plugin to your omero with
 ```
 omero config append omero.web.apps '"omero_microMetaApp"'
 ```
-Optionally add top menu link with 
+Optionally add a top menu link with 
 ```
 omero config append omero.web.ui.top_links '["Micro-Meta-App", "microMetaAppOmero_index", {"title": "Micro-Meta-App", "target": "_blank"}]'
 ```
