@@ -30,7 +30,7 @@ Micro-Meta App is a novel application that provides an interactive and intuitive
 ### Requirements
 The Micro-Meta App Omero.web plugin requires a working Omero.server and Omero.web environment to be installated.
 ### Install
-Download the latest release from here(https://github.com/WU-BIMAC/MicroMetaApp-Omero/releases/latest)
+Download the latest release from here(#https://github.com/WU-BIMAC/MicroMetaApp-Omero/releases/latest)
 Go the folder where you downloaded the package and run 
 ```
 pip install -e .
