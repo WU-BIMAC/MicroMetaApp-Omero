@@ -96,7 +96,7 @@
 						imagesPathSVG:
 							"{% static 'microMetaAppOmero/images/svg/' %}",
 						key: "my-app",
-						onLoadSchema: function (complete) {
+						onLoadSchema: function (complete, resolve) {
 							// Maybe some UI to select something...
 							// Not all browsers have `window.fetch`, used for demoing purposes.
 							// Also, window.fetch requires HTTP so we getting this from GitHub... lol
@@ -110,10 +110,10 @@
 								})
 								.then(function (respText) {
 									var schema = JSON.parse(respText);
-									complete(schema);
+									complete(schema, resolve);
 								});
 						},
-						onLoadDimensions: function (complete) {
+						onLoadDimensions: function (complete, resolve) {
 							// Maybe some UI to select something...
 							// Not all browsers have `window.fetch`, used for demoing purposes.
 							// Also, window.fetch requires HTTP so we getting this from GitHub... lol
@@ -127,10 +127,10 @@
 								})
 								.then(function (respText) {
 									var dimensions = JSON.parse(respText);
-									complete(dimensions);
+									complete(dimensions, resolve);
 								});
 						},
-						onLoadMicroscopes: function (complete) {
+						onLoadMicroscopes: function (complete, resolve) {
 							let microscopesDB = {};
 							fetch("{% url 'microMetaAppOmero_list_microscopes' %}")
 								.then(function (response) {
@@ -143,7 +143,7 @@
 										microscopesDB[m.Name + "_" + m.ID] = m;
 									});
 
-									complete(microscopesDB);
+									complete(microscopesDB, resolve);
 								});
 						},
 						onSaveMicroscope: function (microscope, complete) {
