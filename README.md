@@ -10,10 +10,16 @@
 
 # 4DN Micro-Meta App OMERO plugin -- alpha prototype
 
-1. [Summary](#summary)
-2. [Background](#background)
-3. [Description](#description)
+1. [Quick start guide](#quick-start-guide)
+2. [Summary](#summary)
+3. [Background](#background)
+4. [Description](#description)
+5. [Website](https://wu-bimac.github.io/MicroMetaApp.github.io/)
 4. [Installation](#installation)
+5. [Documentation](https://micrometaapp-docs.readthedocs.io/en/latest/index.html)
+8. [Step-by-Step Instructions](https://micrometaapp-docs.readthedocs.io/en/latest/docs/tutorials/index.html#step-by-step-instructions)
+9. [Tutorial Videos](https://micrometaapp-docs.readthedocs.io/en/latest/docs/tutorials/VideoTutorials.html#micro-meta-app-video-tutorials)
+10. [Example data files](https://doi.org/10.5281/zenodo.4891883)
 
 ## Quick start guide
 Use these videos to get started with using Micro-Meta App after intallation into OMERO and downloading the example data files:
