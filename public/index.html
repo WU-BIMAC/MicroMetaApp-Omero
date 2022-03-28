@@ -97,12 +97,9 @@
 							"{% static 'microMetaAppOmero/images/svg/' %}",
 						key: "my-app",
 						onLoadSchema: function (complete, resolve) {
-							// Maybe some UI to select something...
-							// Not all browsers have `window.fetch`, used for demoing purposes.
-							// Also, window.fetch requires HTTP so we getting this from GitHub... lol
 							window
 								.fetch(
-									"https://raw.githubusercontent.com/WU-BIMAC/4DNMetadataSchemaXSD2JSONConverter/master/versions/v02-01/fullSchema.json"
+									"https://raw.githubusercontent.com/WU-BIMAC/4DNMetadataSchemaXSD2JSONConverter/master/versions/2-01-1/fullSchema.json"
 								)
 								.then(function (resp) {
 									console.log(resp);
@@ -114,12 +111,9 @@
 								});
 						},
 						onLoadDimensions: function (complete, resolve) {
-							// Maybe some UI to select something...
-							// Not all browsers have `window.fetch`, used for demoing purposes.
-							// Also, window.fetch requires HTTP so we getting this from GitHub... lol
 							window
 								.fetch(
-									"https://raw.githubusercontent.com/WU-BIMAC/4DNMetadataSchemaXSD2JSONConverter/master/versions/v02-01/dimensions/MicroscopeDimensions.json"
+									"https://raw.githubusercontent.com/WU-BIMAC/4DNMetadataSchemaXSD2JSONConverter/master/versions/2-01-1/dimensions/MicroscopeDimensions.json"
 								)
 								.then(function (resp) {
 									console.log(resp);
@@ -128,6 +122,20 @@
 								.then(function (respText) {
 									var dimensions = JSON.parse(respText);
 									complete(dimensions, resolve);
+								});
+						},
+						onLoadTierList: function (complete, resolve) {
+							window
+								.fetch(
+									"https://raw.githubusercontent.com/WU-BIMAC/4DNMetadataSchemaXSD2JSONConverter/master/versions/2-01-1/tiers/TierList.json"
+								)
+								.then(function (resp) {
+									console.log(resp);
+									return resp.text();
+								})
+								.then(function (respText) {
+									var tierList = JSON.parse(respText);
+									complete(tierList, resolve);
 								});
 						},
 						onLoadMicroscopes: function (complete, resolve) {
@@ -146,7 +154,24 @@
 									complete(microscopesDB, resolve);
 								});
 						},
-						onSaveMicroscope: function (microscope, complete) {
+						onLoadSettings: function (complete, resolve) {
+							let settingsDB = {};
+							// fetch("{% url 'microMetaAppOmero_list_microscopes' %}")
+							// 	.then(function (response) {
+							// 		return response.json();
+							// 	})
+							// 	.then(function (data) {
+							// 		console.log(data.data);
+							// 		data.data.forEach(function (element) {
+							// 			var m = element.microscope;
+							// 			microscopesDB[m.Name + "_" + m.ID] = m;
+							// 		});
+
+							// 		complete(microscopesDB, resolve);
+							// 	});
+							complete(settingsDB, resolve);
+						},
+						onSaveMicroscope: function (groupID, microscope, complete) {
 							console.log("microscope", microscope);
 							var csrftoken = getCookie("csrftoken");
 							console.log("csrftoken", csrftoken);
@@ -159,7 +184,10 @@
 									"Content-Type": "application/json",
 									"X-CSRFToken": csrftoken,
 								},
-								body: JSON.stringify({ microscope: microscope }),
+								body: JSON.stringify({
+									microscope: microscope,
+									groupID: groupID
+								}),
 							})
 								.then(function (response) {
 									return response.json();
@@ -169,6 +197,46 @@
 									complete(microscope.Name);
 								});
 						},
+						onSaveSetting: function (setting, complete) {
+							// console.log("microscope", microscope);
+							// var csrftoken = getCookie("csrftoken");
+							// console.log("csrftoken", csrftoken);
+							// fetch("{% url 'microMetaAppOmero_save_microscope' %}", {
+							// 	credentials: "include",
+							// 	method: "POST",
+							// 	mode: "same-origin",
+							// 	headers: {
+							// 		Accept: "application/json",
+							// 		"Content-Type": "application/json",
+							// 		"X-CSRFToken": csrftoken,
+							// 	},
+							// 	body: JSON.stringify({ microscope: microscope }),
+							// })
+							// 	.then(function (response) {
+							// 		return response.json();
+							// 	})
+							// 	.then(function (data) {
+							// 		console.log(data);
+							// 		complete(microscope.Name);
+							// 	});
+							complete(setting.Name);
+						},
+
+						onListGroups: function (complete) {
+							let groupsDB = {};
+							fetch("{% url 'microMetaAppOmero_list_groups' %}")
+								.then(function (response) {
+									return response.json();
+								})
+								.then(function (data) {
+									console.log(data.data);
+									data.data.forEach(function (element) {
+										groupsDB[element.name + "_" + element.id] = element;
+									});
+
+									complete(groupsDB);
+								});
+						}
 					}),
 					document.getElementById("root")
 				);
