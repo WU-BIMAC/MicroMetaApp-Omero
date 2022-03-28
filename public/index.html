@@ -82,11 +82,14 @@
 
 			//var debouncedRender = _.debounce(render, 500);
 
+
 			function render() {
+
 				let dims = {
 					width: window.innerWidth,
 					height: window.innerHeight,
 				};
+
 				ReactDOM.render(
 					React.createElement(microMetaApp, {
 						height: dims.height,
@@ -138,43 +141,56 @@
 									complete(tierList, resolve);
 								});
 						},
-						onLoadMicroscopes: function (complete, resolve) {
+						onLoadMicroscopes: function (groupID, complete, resolve) {
 							let microscopesDB = {};
 							fetch("{% url 'microMetaAppOmero_list_microscopes' %}")
 								.then(function (response) {
 									return response.json();
 								})
 								.then(function (data) {
+									console.log("onLoadMicroscopes");
 									console.log(data.data);
 									data.data.forEach(function (element) {
+										var id = element.id;
+										if (element.groupId !== groupID)
+											return;
 										var m = element.microscope;
-										microscopesDB[m.Name + "_" + m.ID] = m;
+										microscopesDB[m.Name + "_" + m.ID] = {};
+										microscopesDB[m.Name + "_" + m.ID].microscope = m;
+										microscopesDB[m.Name + "_" + m.ID].id = id;
 									});
 
 									complete(microscopesDB, resolve);
 								});
 						},
-						onLoadSettings: function (complete, resolve) {
+						onLoadSettings: function (groupID, complete, resolve) {
 							let settingsDB = {};
-							// fetch("{% url 'microMetaAppOmero_list_microscopes' %}")
-							// 	.then(function (response) {
-							// 		return response.json();
-							// 	})
-							// 	.then(function (data) {
-							// 		console.log(data.data);
-							// 		data.data.forEach(function (element) {
-							// 			var m = element.microscope;
-							// 			microscopesDB[m.Name + "_" + m.ID] = m;
-							// 		});
+							fetch("{% url 'microMetaAppOmero_list_settings' %}")
+								.then(function (response) {
+									return response.json();
+								})
+								.then(function (data) {
+									console.log("onLoadSettings");
+									console.log(data.data);
+									data.data.forEach(function (element) {
+										var id = element.id;
+										if (element.groupId !== groupID)
+											return;
+										var sett = element.setting;
+										settingsDB[sett.Name + "_" + sett.ID] = {};
+										settingsDB[sett.Name + "_" + sett.ID].setting = sett;
+										settingsDB[sett.Name + "_" + sett.ID].id = id;
+									});
 
-							// 		complete(microscopesDB, resolve);
-							// 	});
-							complete(settingsDB, resolve);
+									complete(settingsDB, resolve);
+								});
 						},
 						onSaveMicroscope: function (groupID, microscope, complete) {
-							console.log("microscope", microscope);
+							var body = JSON.stringify({
+								microscope: microscope,
+								groupID: groupID
+							});
 							var csrftoken = getCookie("csrftoken");
-							console.log("csrftoken", csrftoken);
 							fetch("{% url 'microMetaAppOmero_save_microscope' %}", {
 								credentials: "include",
 								method: "POST",
@@ -184,42 +200,99 @@
 									"Content-Type": "application/json",
 									"X-CSRFToken": csrftoken,
 								},
-								body: JSON.stringify({
-									microscope: microscope,
-									groupID: groupID
-								}),
+								body: body
 							})
 								.then(function (response) {
 									return response.json();
 								})
 								.then(function (data) {
+									console.log("onSaveMicroscope");
 									console.log(data);
 									complete(microscope.Name);
 								});
 						},
-						onSaveSetting: function (setting, complete) {
-							// console.log("microscope", microscope);
-							// var csrftoken = getCookie("csrftoken");
-							// console.log("csrftoken", csrftoken);
-							// fetch("{% url 'microMetaAppOmero_save_microscope' %}", {
-							// 	credentials: "include",
-							// 	method: "POST",
-							// 	mode: "same-origin",
-							// 	headers: {
-							// 		Accept: "application/json",
-							// 		"Content-Type": "application/json",
-							// 		"X-CSRFToken": csrftoken,
-							// 	},
-							// 	body: JSON.stringify({ microscope: microscope }),
-							// })
-							// 	.then(function (response) {
-							// 		return response.json();
-							// 	})
-							// 	.then(function (data) {
-							// 		console.log(data);
-							// 		complete(microscope.Name);
-							// 	});
-							complete(setting.Name);
+						onSaveSetting: function (microscopeID, groupID, imageID, setting, complete) {
+							var body = JSON.stringify({
+								setting: setting,
+								microscopeID: microscopeID,
+								groupID: groupID,
+								imageID: imageID,
+							});
+							var csrftoken = getCookie("csrftoken");
+							fetch("{% url 'microMetaAppOmero_save_setting' %}", {
+								credentials: "include",
+								method: "POST",
+								mode: "same-origin",
+								headers: {
+									Accept: "application/json",
+									"Content-Type": "application/json",
+									"X-CSRFToken": csrftoken,
+								},
+								body: body,
+							})
+								.then(function (response) {
+									return response.json();
+								})
+								.then(function (data) {
+									console.log("onSaveSetting");
+									console.log(data);
+									complete(setting.Name);
+								});
+						},
+
+						onLoadMetadata: function (groupID, imageID, complete) {
+							let metadata = {};
+							var body = JSON.stringify({
+								groupID: groupID,
+								imageID: imageID,
+							});
+							var csrftoken = getCookie("csrftoken");
+							fetch("{% url 'microMetaAppOmero_load_metadata' %}", {
+								credentials: "include",
+								method: "POST",
+								mode: "same-origin",
+								headers: {
+									Accept: "application/json",
+									"Content-Type": "application/json",
+									"X-CSRFToken": csrftoken,
+								},
+								body: body
+							}).then(function (response) {
+								return response.json();
+							}).then(function (data) {
+								console.log("onLoadMetadata");
+								console.log(data.data);
+								complete(data.data);
+							});
+						},
+
+						onListGroupsProjectsDatasetsImages: function (complete) {
+							let groupsDB = {};
+							fetch("{% url 'microMetaAppOmero_list_groups_projects_datasets_images' %}")
+								.then(function (response) {
+									return response.json();
+								})
+								.then(function (data) {
+									data.data.forEach(function (group) {
+										projects = {};
+										group.projects.forEach(function (project) {
+											datasets = {};
+											project.datasets.forEach(function (dataset) {
+												images = {};
+												dataset.images.forEach(function (image) {
+													images[image.name + "_" + image.id] = image;
+												})
+												dataset.images = images;
+												datasets[dataset.name + "_" + dataset.id] = dataset;
+											})
+											project.datasets = datasets;
+											projects[project.name + "_" + project.id] = project;
+										})
+										group.projects = projects;
+										groupsDB[group.name + "_" + group.id] = group;
+									});
+									complete(groupsDB);
+								});
 						},
 
 						onListGroups: function (complete) {
@@ -229,9 +302,8 @@
 									return response.json();
 								})
 								.then(function (data) {
-									console.log(data.data);
-									data.data.forEach(function (element) {
-										groupsDB[element.name + "_" + element.id] = element;
+									data.data.forEach(function (group) {
+										groupsDB[group.name + "_" + group.id] = group;
 									});
 
 									complete(groupsDB);
