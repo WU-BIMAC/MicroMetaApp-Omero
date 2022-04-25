@@ -122,6 +122,13 @@ def load_metadata(request, conn=None, **kwargs):
                 }
                 rsp.append(error)
                 return JsonResponse({'data': error})
+            elif int(javaVersionMain) > 1 and int(javaVersionMain < 8):
+                error = {
+                    'Error': "This software require at least java version 1.8, you are currently running java version " +
+                    javaVersion + ". Update your java version or skip the image loading process."
+                }
+                rsp.append(error)
+                return JsonResponse({'data': error})
         elif javaVersion.startswith("openjdk version"):
             javaVersion = javaVersion.replace('openjdk version "', "")
             javaVersion = javaVersion.split('"')[0]
@@ -129,7 +136,14 @@ def load_metadata(request, conn=None, **kwargs):
             javaVersionMain = javaVersionSplit[0]
             javaVersionSub = javaVersionSplit[1]
             # or (javaVersionMain == 1 and javaVersionSub < 8):
-            if int(javaVersionMain) < 8:
+            if int(javaVersionMain) < 1 or (int(javaVersionMain) == 1 and int(javaVersionSub) < 8):
+                error = {
+                    'Error': "This software require at least openjdk version 8, you are currently running openjdk version " +
+                    javaVersion + ". Update your openjdk version or skip the image loading process."
+                }
+                rsp.append(error)
+                return JsonResponse({'data': error})
+            elif int(javaVersionMain) > 1 and int(javaVersionMain < 8):
                 error = {
                     'Error': "This software require at least openjdk version 8, you are currently running openjdk version " +
                     javaVersion + ". Update your openjdk version or skip the image loading process."
@@ -258,6 +272,22 @@ def list_groups(request, conn=None, **kwargs):
 
 
 @ login_required()
+def check_Image_ID(request, conn=None, **kwargs):
+    body_json = json.loads(request.body)
+    imageID = body_json['imageID']
+
+    rsp = []
+    for g in conn.getGroupsMemberOf():
+        groupID = g.getId()
+        conn.SERVICE_OPTS.setOmeroGroup(groupID)
+        image = conn.getObject("Image", imageID)
+        if image is not None:
+            return JsonResponse({'data': {'valid': 1, 'imageName': image.getName(), 'groupID': groupID}})
+
+    return JsonResponse({'data': {'valid': 0}})
+
+
+@ login_required()
 def list_microscopes(request, conn=None, **kwargs):
 
     conn.SERVICE_OPTS.setOmeroGroup('-1')
@@ -303,32 +333,39 @@ def list_microscopes(request, conn=None, **kwargs):
 
 @ login_required()
 def list_settings(request, conn=None, **kwargs):
-    conn.SERVICE_OPTS.setOmeroGroup('-1')
-    projects = conn.getObjects("Project")
+    body_json = json.loads(request.body)
+    groupID = body_json['groupID']
+    imageID = body_json['imageID']
+
+    conn.SERVICE_OPTS.setOmeroGroup(groupID)
+    image = conn.getObject("Image", imageID)
+    imageGroupID = image.getDetails().getGroup().getId()
+    # conn.SERVICE_OPTS.setOmeroGroup('-1')
+    #projects = conn.getObjects("Project")
     rsp = []
-    for proj in projects:
-        projID = proj.getDetails().getGroup().getId()
-        for dataset in proj.listChildren():
-            for image in dataset.listChildren():
-                for file_ann in image.listAnnotations():
-                    ann_ns = file_ann.getNs()
-                    ann_type = file_ann.OMERO_TYPE
-                    if ann_type != FileAnnotationI or ann_ns != JSON_FILEANN_NS:
-                        continue
-                    file_wrapper = file_ann.getFile()
-                    file_data = b"".join(list(file_wrapper.getFileInChunks()))
-                    json_data = json.loads(file_data.decode("utf-8"))
-                    fig_file = {
-                        'id': file_ann.getId(),
-                        'groupId': projID,
-                        # 'name': unwrap(fa['name']),
-                        # 'description': unwrap(fa['desc']),
-                        # 'ownerFullName': "%s %s" % (first_name, last_name),
-                        # 'creationDate': time.mktime(date.timetuple()),
-                        # 'canEdit': fa['obj_details_permissions'].get('canEdit'),
-                        'setting': json_data
-                    }
-                    rsp.append(fig_file)
+    for file_ann in image.listAnnotations():
+        ann_ns = file_ann.getNs()
+        ann_type = file_ann.OMERO_TYPE
+        if ann_type != FileAnnotationI or ann_ns != JSON_FILEANN_NS:
+            continue
+        file_wrapper = file_ann.getFile()
+        file_data = b"".join(list(file_wrapper.getFileInChunks()))
+        json_data = json.loads(file_data.decode("utf-8"))
+        fig_file = {
+            'id': file_ann.getId(),
+            'groupId': imageGroupID,
+            # 'name': unwrap(fa['name']),
+            # 'description': unwrap(fa['desc']),
+            # 'ownerFullName': "%s %s" % (first_name, last_name),
+            # 'creationDate': time.mktime(date.timetuple()),
+            # 'canEdit': fa['obj_details_permissions'].get('canEdit'),
+            'setting': json_data
+        }
+        rsp.append(fig_file)
+    # for proj in projects:
+        #projID = proj.getDetails().getGroup().getId()
+        # for dataset in proj.listChildren():
+        # for image in dataset.listChildren():
 
     return JsonResponse({'data': rsp})
 

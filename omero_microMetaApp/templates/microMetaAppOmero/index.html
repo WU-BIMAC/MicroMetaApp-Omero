@@ -163,10 +163,25 @@
 									complete(microscopesDB, resolve);
 								});
 						},
-						onLoadSettings: function (groupID, complete, resolve) {
+						onLoadSettings: function (groupID, imageID, complete, resolve) {
+							var body = JSON.stringify({
+								groupID: groupID,
+								imageID: imageID,
+							});
+							var csrftoken = getCookie("csrftoken");
+
 							let settingsDB = {};
-							fetch("{% url 'microMetaAppOmero_list_settings' %}")
-								.then(function (response) {
+							fetch("{% url 'microMetaAppOmero_list_settings' %}", {
+								credentials: "include",
+								method: "POST",
+								mode: "same-origin",
+								headers: {
+									Accept: "application/json",
+									"Content-Type": "application/json",
+									"X-CSRFToken": csrftoken,
+								},
+								body: body
+							}).then(function (response) {
 									return response.json();
 								})
 								.then(function (data) {
@@ -308,6 +323,27 @@
 
 									complete(groupsDB);
 								});
+						},
+						checkImageID: function(imageID, complete) {
+							var body = JSON.stringify({
+								imageID: imageID,
+							});
+							var csrftoken = getCookie("csrftoken");
+							fetch("{% url 'microMetaAppOmero_check_Image_ID' %}", {
+								credentials: "include",
+								method: "POST",
+								mode: "same-origin",
+								headers: {
+									Accept: "application/json",
+									"Content-Type": "application/json",
+									"X-CSRFToken": csrftoken,
+								},
+								body: body
+							}).then(function (response) {
+									return response.json();
+							}).then(function (data) {
+								complete(data.data.groupID, imageID, data.data.imageName, data.data.valid);
+							});
 						}
 					}),
 					document.getElementById("root")

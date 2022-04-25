@@ -66,10 +66,38 @@ class MicroMetaAppOmeroGroupChooser extends React.PureComponent {
 		this.onClickConfirmGroupImage = this.onClickConfirmGroupImage.bind(this);
 
 		this.onChangeInputImageID = this.onChangeInputImageID.bind(this);
+
+		this.checkImageID = this.checkImageID.bind(this);
+		this.completeCheckImageID = this.completeCheckImageID.bind(this);
 	}
 
 	componentDidMount() {
 		//TODO autoselect default group value?
+	}
+	checkImageID(imageID) {
+		this.props.checkImageID(imageID, this.completeCheckImageID);
+	}
+
+	completeCheckImageID(groupID, imageID, imageName, isValid) {
+		let selectedLoadGroup = null;
+		for (const [groupKey, group] of Object.entries(this.props.groups)) {
+			if ((group.id = groupID)) {
+				selectedLoadGroup = groupKey;
+				break;
+			}
+		}
+		let inputImageIsValid = isValid;
+		if (!isDefined(selectedLoadGroup)) {
+			inputImageIsValid = false;
+		}
+		this.setState({
+			selectedLoadGroup: selectedLoadGroup,
+			selectedProject: null,
+			selectedDataset: null,
+			selectedImage: imageName,
+			inputImageID: String(imageID),
+			inputImageIsValid: isValid,
+		});
 	}
 
 	onChangeInputImageID(input) {
@@ -80,43 +108,50 @@ class MicroMetaAppOmeroGroupChooser extends React.PureComponent {
 		let datasetNewKey = null;
 		let imageNewKey = null;
 		let inputImageIsValid = false;
-		for (const [groupKey, group] of Object.entries(this.props.groups)) {
-			for (const [projectKey, project] of Object.entries(group.projects)) {
-				for (const [datasetKey, dataset] of Object.entries(project.datasets)) {
-					for (const [imageKey, image] of Object.entries(dataset.images)) {
-						if (image.id === newValue) {
-							groupNewKey = groupKey;
-							projectNewKey = projectKey;
-							datasetNewKey = datasetKey;
-							imageNewKey = imageKey;
-							inputImageIsValid = true;
-							break;
+
+		if (!this.props.loadGroupsOnly) {
+			for (const [groupKey, group] of Object.entries(this.props.groups)) {
+				for (const [projectKey, project] of Object.entries(group.projects)) {
+					for (const [datasetKey, dataset] of Object.entries(
+						project.datasets
+					)) {
+						for (const [imageKey, image] of Object.entries(dataset.images)) {
+							if (image.id === newValue) {
+								groupNewKey = groupKey;
+								projectNewKey = projectKey;
+								datasetNewKey = datasetKey;
+								imageNewKey = imageKey;
+								inputImageIsValid = true;
+								break;
+							}
 						}
+						if (inputImageIsValid) break;
 					}
 					if (inputImageIsValid) break;
 				}
 				if (inputImageIsValid) break;
 			}
-			if (inputImageIsValid) break;
-		}
-		if (inputImageIsValid) {
-			this.setState({
-				selectedLoadGroup: groupNewKey,
-				selectedProject: projectNewKey,
-				selectedDataset: datasetNewKey,
-				selectedImage: imageNewKey,
-				inputImageID: newValueS,
-				inputImageIsValid: inputImageIsValid,
-			});
+			if (inputImageIsValid) {
+				this.setState({
+					selectedLoadGroup: groupNewKey,
+					selectedProject: projectNewKey,
+					selectedDataset: datasetNewKey,
+					selectedImage: imageNewKey,
+					inputImageID: newValueS,
+					inputImageIsValid: inputImageIsValid,
+				});
+			} else {
+				this.setState({
+					selectedLoadGroup: null,
+					selectedProject: null,
+					selectedDataset: null,
+					selectedImage: null,
+					inputImageID: newValueS,
+					inputImageIsValid: inputImageIsValid,
+				});
+			}
 		} else {
-			this.setState({
-				selectedLoadGroup: null,
-				selectedProject: null,
-				selectedDataset: null,
-				selectedImage: null,
-				inputImageID: newValueS,
-				inputImageIsValid: inputImageIsValid,
-			});
+			this.checkImageID(newValue);
 		}
 	}
 
@@ -181,11 +216,7 @@ class MicroMetaAppOmeroGroupChooser extends React.PureComponent {
 	onClickConfirmGroupImage() {
 		let group = this.props.groups[this.state.selectedLoadGroup];
 		let selectedGroupID = group.id;
-		let image =
-			group.projects[this.state.selectedProject].datasets[
-				this.state.selectedDataset
-			].images[this.state.selectedImage];
-		let selectedImageID = image.id;
+		let selectedImageID = this.state.inputImageID;
 		this.props.onConfirm(
 			selectedGroupID,
 			selectedImageID,
@@ -222,6 +253,7 @@ class MicroMetaAppOmeroGroupChooser extends React.PureComponent {
 			flexFlow: "row",
 			width: "100%",
 			height: "120px",
+			maxHeight: "120px",
 			alignItems: "center",
 			margin: "10px",
 		};
@@ -230,7 +262,8 @@ class MicroMetaAppOmeroGroupChooser extends React.PureComponent {
 			justifyContent: "center",
 			flexFlow: "row",
 			width: "100%",
-			height: "430px",
+			height: "400px",
+			maxHeight: "400px",
 			alignItems: "center",
 			margin: "10px",
 		};
@@ -244,20 +277,32 @@ class MicroMetaAppOmeroGroupChooser extends React.PureComponent {
 			maxHeight: "120px",
 			overflow: "auto",
 		};
+		let radioButtonsContainer0B = {
+			width: "360px",
+			height: "90px",
+			maxHeight: "90px",
+			overflow: "auto",
+		};
 
 		const radioButtonsContainer = {
 			display: "flex",
 			justifyContent: "center",
 			flexFlow: "column",
 			width: "360px",
-			height: "430px",
+			height: "400px",
 			alignItems: "flex-start",
-			maxHeight: "430px",
+			maxHeight: "400px",
+			overflow: "auto",
+		};
+		const radioButtonsContainerB = {
+			width: "360px",
+			height: "370px",
+			maxHeight: "370px",
 			overflow: "auto",
 		};
 
 		const buttonStyleWide = {
-			width: "350px",
+			width: "330px",
 			height: "50px",
 			margin: "5px",
 			whiteSpace: "break-spaces",
@@ -327,7 +372,7 @@ class MicroMetaAppOmeroGroupChooser extends React.PureComponent {
 			(groupsOnly &&
 				isDefined(selectedLoadGroup) &&
 				isDefined(selectedSaveGroup)) ||
-			(!groupsOnly && isDefined(selectedImage))
+			(!groupsOnly && isDefined(inputImageID) && inputImageIsValid)
 		) {
 			continueDisabled = false;
 		}
@@ -343,30 +388,31 @@ class MicroMetaAppOmeroGroupChooser extends React.PureComponent {
 			groupNames.push(newKey);
 		}
 
-		if (isDefined(selectedLoadGroup)) {
-			let group = groups[selectedLoadGroup];
-			for (const [key, value] of Object.entries(group.projects)) {
-				let newKey = replaceLast(key, "_", " - ");
-				projectNames.push(newKey);
+		if (!this.props.loadGroupsOnly) {
+			if (isDefined(selectedLoadGroup)) {
+				let group = groups[selectedLoadGroup];
+				for (const [key, value] of Object.entries(group.projects)) {
+					let newKey = replaceLast(key, "_", " - ");
+					projectNames.push(newKey);
+				}
 			}
-		}
-
-		if (isDefined(selectedProject)) {
-			let group = groups[selectedLoadGroup];
-			let project = group.projects[selectedProject];
-			for (const [key, value] of Object.entries(project.datasets)) {
-				let newKey = replaceLast(key, "_", " - ");
-				datasetNames.push(newKey);
+			if (isDefined(selectedProject)) {
+				let group = groups[selectedLoadGroup];
+				let project = group.projects[selectedProject];
+				for (const [key, value] of Object.entries(project.datasets)) {
+					let newKey = replaceLast(key, "_", " - ");
+					datasetNames.push(newKey);
+				}
 			}
-		}
 
-		if (isDefined(selectedDataset)) {
-			let group = groups[selectedLoadGroup];
-			let project = group.projects[selectedProject];
-			let dataset = project.datasets[selectedDataset];
-			for (const [key, value] of Object.entries(dataset.images)) {
-				let newKey = replaceLast(key, "_", " - ");
-				imageNames.push(newKey);
+			if (isDefined(selectedDataset)) {
+				let group = groups[selectedLoadGroup];
+				let project = group.projects[selectedProject];
+				let dataset = project.datasets[selectedDataset];
+				for (const [key, value] of Object.entries(dataset.images)) {
+					let newKey = replaceLast(key, "_", " - ");
+					imageNames.push(newKey);
+				}
 			}
 		}
 
@@ -386,7 +432,7 @@ class MicroMetaAppOmeroGroupChooser extends React.PureComponent {
 						acquisition settings for.
 					</p>
 				),
-				position: "bottom",
+				position: "right",
 			};
 			let projectTooltip = {
 				title: "Select project",
@@ -396,7 +442,7 @@ class MicroMetaAppOmeroGroupChooser extends React.PureComponent {
 						acquisition settings for.
 					</p>
 				),
-				position: "bottom",
+				position: "right",
 			};
 			let datasetTooltip = {
 				title: "Select dataset",
@@ -406,7 +452,7 @@ class MicroMetaAppOmeroGroupChooser extends React.PureComponent {
 						acquisition settings for.
 					</p>
 				),
-				position: "bottom",
+				position: "left",
 			};
 			let imageTooltip = {
 				title: "Select image",
@@ -415,7 +461,7 @@ class MicroMetaAppOmeroGroupChooser extends React.PureComponent {
 						Select the OMERO image you want to create acquisition settings for.
 					</p>
 				),
-				position: "bottom",
+				position: "left",
 			};
 
 			let inputImageIDValue = "";
@@ -443,206 +489,238 @@ class MicroMetaAppOmeroGroupChooser extends React.PureComponent {
 					style={radioButtonsContainer0}
 				>
 					<h4 key={"input-image-id-title"}>Insert Image ID:</h4>
-					{inputImageIDForm}
-				</div>
-			);
-
-			let loadGroupRadios = [];
-			for (let i = 0; i < groupNames.length; i++) {
-				loadGroupRadios.push(
-					<ToggleButton
-						id={"load-group-radio-" + i}
-						key={"load-group-radio-" + i}
-						value={groupNames[i]}
-						variant={"outline-primary"}
-						style={buttonStyleWide}
+					<div
+						key="input-image-id-container-b"
+						id="input-image-id-container-b"
+						style={radioButtonsContainer0B}
 					>
-						{groupNames[i]}
-					</ToggleButton>
-				);
-			}
-			let loadGroupRadio = (
-				<PopoverTooltip
-					id={"popover-radio-load-group"}
-					key={"popover-radio-load-group"}
-					position={groupLoadTooltip.position}
-					title={groupLoadTooltip.title}
-					content={groupLoadTooltip.content}
-					element={
-						<ToggleButtonGroup
-							id="radio-load-group"
-							key="radio-load-group"
-							type="radio"
-							name="radio-load-group"
-							value={selectedLoadGroupValue}
-							onChange={(e) => {
-								this.onClickSelectLoadGroup(e);
-							}}
-							vertical={true}
-						>
-							{loadGroupRadios}
-						</ToggleButtonGroup>
-					}
-				/>
-			);
-			list.push(
-				<div
-					key="radio-load-group-container"
-					id="radio-load-group-container"
-					style={radioButtonsContainer}
-				>
-					<h4 key={"select-manufacturer"}>Load from group:</h4>
-					{loadGroupRadio}
+						{inputImageIDForm}
+					</div>
 				</div>
 			);
 
-			if (isDefined(selectedLoadGroup)) {
-				let loadProjectRadios = [];
-				for (let i = 0; i < projectNames.length; i++) {
-					loadProjectRadios.push(
+			if (!this.props.loadGroupsOnly) {
+				let loadGroupRadios = [];
+				for (let i = 0; i < groupNames.length; i++) {
+					loadGroupRadios.push(
 						<ToggleButton
-							id={"load-project-radio-" + i}
-							key={"load-project-radio-" + i}
-							value={projectNames[i]}
+							id={"load-group-radio-" + i}
+							key={"load-group-radio-" + i}
+							value={groupNames[i]}
 							variant={"outline-primary"}
 							style={buttonStyleWide}
 						>
-							{projectNames[i]}
+							{groupNames[i]}
 						</ToggleButton>
 					);
 				}
-				let loadProjectRadio = (
+				let loadGroupRadio = (
 					<PopoverTooltip
-						id={"popover-radio-load-project"}
-						key={"popover-radio-load-project"}
-						position={projectTooltip.position}
-						title={projectTooltip.title}
-						content={projectTooltip.content}
+						id={"popover-radio-load-group"}
+						key={"popover-radio-load-group"}
+						position={groupLoadTooltip.position}
+						title={groupLoadTooltip.title}
+						content={groupLoadTooltip.content}
 						element={
 							<ToggleButtonGroup
-								id="radio-load-project"
-								key="radio-load-project"
+								id="radio-load-group"
+								key="radio-load-group"
 								type="radio"
-								name="radio-load-project"
-								value={selectedProjectValue}
+								name="radio-load-group"
+								value={selectedLoadGroupValue}
 								onChange={(e) => {
-									this.onClickSelectProject(e);
+									this.onClickSelectLoadGroup(e);
 								}}
 								vertical={true}
 							>
-								{loadProjectRadios}
+								{loadGroupRadios}
 							</ToggleButtonGroup>
 						}
 					/>
 				);
 				list.push(
 					<div
-						key="radio-load-project-container"
-						id="radio-load-project-container"
+						key="radio-load-group-container"
+						id="radio-load-group-container"
 						style={radioButtonsContainer}
 					>
-						<h4 key={"select-project-title"}>Select Image Project:</h4>
-						{loadProjectRadio}
+						<h4 key={"select-manufacturer"}>Load from group:</h4>
+						<div
+							key="radio-load-group-container-b"
+							id="radio-load-group-container-b"
+							style={radioButtonsContainerB}
+						>
+							{loadGroupRadio}
+						</div>
 					</div>
 				);
-				if (isDefined(selectedProject)) {
-					let loadDatasetRadios = [];
-					for (let i = 0; i < datasetNames.length; i++) {
-						loadDatasetRadios.push(
+
+				if (isDefined(selectedLoadGroup)) {
+					let loadProjectRadios = [];
+					for (let i = 0; i < projectNames.length; i++) {
+						loadProjectRadios.push(
 							<ToggleButton
-								id={"load-dataset-radio-" + i}
-								key={"load-dataset-radio-" + i}
-								value={datasetNames[i]}
+								id={"load-project-radio-" + i}
+								key={"load-project-radio-" + i}
+								value={projectNames[i]}
 								variant={"outline-primary"}
 								style={buttonStyleWide}
 							>
-								{datasetNames[i]}
+								{projectNames[i]}
 							</ToggleButton>
 						);
 					}
-					let loadDatasetRadio = (
+					let loadProjectRadio = (
 						<PopoverTooltip
-							id={"popover-radio-load-dataset"}
-							key={"popover-radio-load-dataset"}
-							position={datasetTooltip.position}
-							title={datasetTooltip.title}
-							content={datasetTooltip.content}
+							id={"popover-radio-load-project"}
+							key={"popover-radio-load-project"}
+							position={projectTooltip.position}
+							title={projectTooltip.title}
+							content={projectTooltip.content}
 							element={
 								<ToggleButtonGroup
-									id="radio-load-dataset"
-									key="radio-load-dataset"
+									id="radio-load-project"
+									key="radio-load-project"
 									type="radio"
-									name="radio-load-dataset"
-									value={selectedDatasetValue}
+									name="radio-load-project"
+									value={selectedProjectValue}
 									onChange={(e) => {
-										this.onClickSelectDataset(e);
+										this.onClickSelectProject(e);
 									}}
 									vertical={true}
 								>
-									{loadDatasetRadios}
+									{loadProjectRadios}
 								</ToggleButtonGroup>
 							}
 						/>
 					);
 					list.push(
 						<div
-							key="radio-load-dataset-container"
-							id="radio-load-dataset-container"
+							key="radio-load-project-container"
+							id="radio-load-project-container"
 							style={radioButtonsContainer}
 						>
-							<h4 key={"select-dataset-title"}>Select Image Dataset:</h4>
-							{loadDatasetRadio}
+							<h4 key={"select-project-title"}>Select Image Project:</h4>
+							<div
+								key="radio-load-project-container-b"
+								id="radio-load-project-container-b"
+								style={radioButtonsContainerB}
+							>
+								{loadProjectRadio}
+							</div>
 						</div>
 					);
-					if (isDefined(selectedDataset)) {
-						let loadImageRadios = [];
-						for (let i = 0; i < imageNames.length; i++) {
-							loadImageRadios.push(
+					if (isDefined(selectedProject)) {
+						let loadDatasetRadios = [];
+						for (let i = 0; i < datasetNames.length; i++) {
+							loadDatasetRadios.push(
 								<ToggleButton
-									id={"load-image-radio-" + i}
-									key={"load-image-radio-" + i}
-									value={imageNames[i]}
+									id={"load-dataset-radio-" + i}
+									key={"load-dataset-radio-" + i}
+									value={datasetNames[i]}
 									variant={"outline-primary"}
 									style={buttonStyleWide}
 								>
-									{imageNames[i]}
+									{datasetNames[i]}
 								</ToggleButton>
 							);
 						}
-						let loadImageRadio = (
+						let loadDatasetRadio = (
 							<PopoverTooltip
-								id={"popover-radio-load-image"}
-								key={"popover-radio-load-image"}
-								position={imageTooltip.position}
-								title={imageTooltip.title}
-								content={imageTooltip.content}
+								id={"popover-radio-load-dataset"}
+								key={"popover-radio-load-dataset"}
+								position={datasetTooltip.position}
+								title={datasetTooltip.title}
+								content={datasetTooltip.content}
 								element={
 									<ToggleButtonGroup
-										id="radio-load-image"
-										key="radio-load-image"
+										id="radio-load-dataset"
+										key="radio-load-dataset"
 										type="radio"
-										name="radio-load-image"
-										value={selectedImageValue}
+										name="radio-load-dataset"
+										value={selectedDatasetValue}
 										onChange={(e) => {
-											this.onClickSelectImage(e);
+											this.onClickSelectDataset(e);
 										}}
 										vertical={true}
 									>
-										{loadImageRadios}
+										{loadDatasetRadios}
 									</ToggleButtonGroup>
 								}
 							/>
 						);
 						list.push(
 							<div
-								key="radio-load-image-container"
-								id="radio-load-image-container"
+								key="radio-load-dataset-container"
+								id="radio-load-dataset-container"
 								style={radioButtonsContainer}
 							>
-								<h4 key={"select-image-title"}>Select Image:</h4>
-								{loadImageRadio}
+								<h4 key={"select-dataset-title"}>Select Image Dataset:</h4>
+								<div
+									key="radio-load-dataset-container-b"
+									id="radio-load-dataset-container-b"
+									style={radioButtonsContainerB}
+								>
+									{loadDatasetRadio}
+								</div>
 							</div>
 						);
+						if (isDefined(selectedDataset)) {
+							let loadImageRadios = [];
+							for (let i = 0; i < imageNames.length; i++) {
+								loadImageRadios.push(
+									<ToggleButton
+										id={"load-image-radio-" + i}
+										key={"load-image-radio-" + i}
+										value={imageNames[i]}
+										variant={"outline-primary"}
+										style={buttonStyleWide}
+									>
+										{imageNames[i]}
+									</ToggleButton>
+								);
+							}
+							let loadImageRadio = (
+								<PopoverTooltip
+									id={"popover-radio-load-image"}
+									key={"popover-radio-load-image"}
+									position={imageTooltip.position}
+									title={imageTooltip.title}
+									content={imageTooltip.content}
+									element={
+										<ToggleButtonGroup
+											id="radio-load-image"
+											key="radio-load-image"
+											type="radio"
+											name="radio-load-image"
+											value={selectedImageValue}
+											onChange={(e) => {
+												this.onClickSelectImage(e);
+											}}
+											vertical={true}
+										>
+											{loadImageRadios}
+										</ToggleButtonGroup>
+									}
+								/>
+							);
+							list.push(
+								<div
+									key="radio-load-image-container"
+									id="radio-load-image-container"
+									style={radioButtonsContainer}
+								>
+									<h4 key={"select-image-title"}>Select Image:</h4>
+									<div
+										key="radio-load-image-container-b"
+										id="radio-load-image-container-b"
+										style={radioButtonsContainerB}
+									>
+										{loadImageRadio}
+									</div>
+								</div>
+							);
+						}
 					}
 				}
 			}
@@ -656,14 +734,14 @@ class MicroMetaAppOmeroGroupChooser extends React.PureComponent {
 				content: (
 					<p>Select the OMERO group you want to load your microscope from.</p>
 				),
-				position: "bottom",
+				position: "right",
 			};
 			let groupSaveTooltip = {
 				title: "Select save group",
 				content: (
 					<p>Select the OMERO group you want to save your microscope in.</p>
 				),
-				position: "bottom",
+				position: "left",
 			};
 			let loadGroupRadios = [];
 			for (let i = 0; i < groupNames.length; i++) {
@@ -710,7 +788,13 @@ class MicroMetaAppOmeroGroupChooser extends React.PureComponent {
 					style={radioButtonsContainer}
 				>
 					<h4 key={"select-manufacturer"}>Load from group:</h4>
-					{loadGroupRadio}
+					<div
+						key="radio-load-group-container-b"
+						id="radio-load-group-container-b"
+						style={radioButtonsContainerB}
+					>
+						{loadGroupRadio}
+					</div>
 				</div>
 			);
 			let saveGroupRadios = [];
@@ -758,7 +842,13 @@ class MicroMetaAppOmeroGroupChooser extends React.PureComponent {
 					style={radioButtonsContainer}
 				>
 					<h4 key={"select-save-group"}>Save in group:</h4>
-					{saveGroupRadio}
+					<div
+						key="radio-save-group-container-b"
+						id="radio-save-group-container-b"
+						style={radioButtonsContainerB}
+					>
+						{saveGroupRadio}
+					</div>
 				</div>
 			);
 		}
@@ -824,6 +914,8 @@ export default class MicroMetaAppOmero extends React.PureComponent {
 
 			mode: -1,
 			waitForDataLoad: true,
+
+			loadGroupsOnly: true,
 		};
 
 		this.overlaysContainerRef = React.createRef();
@@ -851,8 +943,11 @@ export default class MicroMetaAppOmero extends React.PureComponent {
 	}
 
 	componentDidMount() {
-		//this.onListGroups();
-		this.onListGroupsProjectsDatasetsImages();
+		if (this.state.loadGroupsOnly) {
+			this.onListGroups();
+		} else {
+			this.onListGroupsProjectsDatasetsImages();
+		}
 	}
 
 	onModeSelection(mode) {
@@ -889,7 +984,19 @@ export default class MicroMetaAppOmero extends React.PureComponent {
 	}
 
 	onLoadSettings(complete, resolve) {
-		this.props.onLoadSettings(this.state.loadGroupRepoID, complete, resolve);
+		let imageRepoID = this.state.imageRepoID;
+		let loadGroupRepoID = this.state.loadGroupRepoID;
+		if (imageRepoID === -1) {
+			let settingsDB = {};
+			complete(settingsDB, resolve);
+		} else {
+			this.props.onLoadSettings(
+				loadGroupRepoID,
+				imageRepoID,
+				complete,
+				resolve
+			);
+		}
 	}
 
 	onLoadMicroscope(microscopeID) {
@@ -969,24 +1076,6 @@ export default class MicroMetaAppOmero extends React.PureComponent {
 		}
 
 		let modalWindow = null;
-		// if (!isDefined(groupRepoID) || groupRepoID === -1) {
-		// 	// modalWindow = (
-		// 	// <ModalWindow
-		// 	// 	overlaysContainer={this.overlaysContainerRef.current}
-		// 	// ></ModalWindow>;
-		// 	// );
-
-		// 	return (
-		// 		<MicroMetaAppOmeroGroupChooser
-		// 			width={"100%"}
-		// 			height={"100%"}
-		// 			imagesPathPNG={this.props.imagesPathPNG}
-		// 			groups={this.state.groups}
-		// 			groupsOnly={true}
-		// 			onConfirm={this.onGroupConfirm}
-		// 		/>
-		// 	);
-		// }
 		if (
 			mode === 1 &&
 			(!isDefined(loadGroupRepoID) || loadGroupRepoID === -1) &&
@@ -998,6 +1087,7 @@ export default class MicroMetaAppOmero extends React.PureComponent {
 						width={"100%"}
 						height={"100%"}
 						imagesPathPNG={this.props.imagesPathPNG}
+						loadGroupsOnly={this.state.loadGroupsOnly}
 						groups={this.state.groups}
 						groupsOnly={true}
 						onConfirm={this.onGroupConfirm}
@@ -1015,8 +1105,10 @@ export default class MicroMetaAppOmero extends React.PureComponent {
 						width={"100%"}
 						height={"100%"}
 						imagesPathPNG={this.props.imagesPathPNG}
+						loadGroupsOnly={this.state.loadGroupsOnly}
 						groups={this.state.groups}
 						groupsOnly={false}
+						checkImageID={this.props.checkImageID}
 						onConfirm={this.onGroupImageConfirm}
 					/>
 				</ModalWindow>

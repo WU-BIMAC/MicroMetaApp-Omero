@@ -20,6 +20,9 @@ urlpatterns = [
     url(r'^list_settings/$', views.list_settings,
         name='microMetaAppOmero_list_settings'),
 
+    url(r'^check_Image_ID/$', views.check_Image_ID,
+        name='microMetaAppOmero_check_Image_ID'),
+
     url(r'^list_groups/$', views.list_groups,
         name='microMetaAppOmero_list_groups'),
 
