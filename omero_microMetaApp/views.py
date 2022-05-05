@@ -117,14 +117,14 @@ def load_metadata(request, conn=None, **kwargs):
             javaVersionSub = javaVersionSplit[1]
             if int(javaVersionMain) < 1 or (int(javaVersionMain) == 1 and int(javaVersionSub) < 8):
                 error = {
-                    'Error': "This software require at least java version 1.8, you are currently running java version " +
+                    'Error': "This software require at least java version 8, you are currently running java version " +
                     javaVersion + ". Update your java version or skip the image loading process."
                 }
                 rsp.append(error)
                 return JsonResponse({'data': error})
-            elif int(javaVersionMain) > 1 and int(javaVersionMain < 8):
+            elif int(javaVersionMain) > 1 and int(javaVersionMain) < 8:
                 error = {
-                    'Error': "This software require at least java version 1.8, you are currently running java version " +
+                    'Error': "This software require at least java version 8, you are currently running java version " +
                     javaVersion + ". Update your java version or skip the image loading process."
                 }
                 rsp.append(error)
@@ -143,7 +143,7 @@ def load_metadata(request, conn=None, **kwargs):
                 }
                 rsp.append(error)
                 return JsonResponse({'data': error})
-            elif int(javaVersionMain) > 1 and int(javaVersionMain < 8):
+            elif int(javaVersionMain) > 1 and int(javaVersionMain) < 8:
                 error = {
                     'Error': "This software require at least openjdk version 8, you are currently running openjdk version " +
                     javaVersion + ". Update your openjdk version or skip the image loading process."
@@ -183,7 +183,8 @@ def load_metadata(request, conn=None, **kwargs):
             }
             rsp.append(error)
             return JsonResponse({'data': error})
-        metadataJSON = json.dumps(response)
+        #metadataJSON = json.dumps(response)
+        metadataJSON = json.loads(response)
         return JsonResponse({'data': metadataJSON})
     except BaseException as err:
         error = {
