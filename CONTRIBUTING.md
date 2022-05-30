@@ -1,4 +1,4 @@
-# Contributing to Micro-Meta App OmeroWeb Plugin
+# Contributing to Micro-Meta App Omero Plugin
 
 **This README file gives instructions for testing your code before opening a PR, please ensure you read these.**
 
