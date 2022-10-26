@@ -19,4 +19,4 @@ cp public/assets/svg/* omero_microMetaApp/static/microMetaAppOmero/images/svg
 cp public/assets/png/* omero_microMetaApp/static/microMetaAppOmero/images/png
 
 mkdir -p ./dist
-tar -cvf ./dist/omero_microMetaApp-1.7.24-b1.tar ./omero_microMetaApp
+tar -cvf ./dist/omero_microMetaApp-1.7.25-b1.tar ./omero_microMetaApp
