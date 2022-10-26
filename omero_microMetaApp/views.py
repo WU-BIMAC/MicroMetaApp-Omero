@@ -461,6 +461,7 @@ def save_microscope(request, conn=None, **kwargs):
         if gid == groupID and proj.getDetails().getOwner().getId() == userID:
             # EVERYTHING COOLIO
             project = proj
+            break
 
     update = conn.getUpdateService()
 
