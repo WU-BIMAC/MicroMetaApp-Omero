@@ -191,8 +191,10 @@ class MicroMetaAppOmeroGroupChooser extends React.PureComponent {
 
 	onClickSelectImage(item) {
 		let itemKey = replaceLast(item, " - ", "_");
-		console.log("item : " + item);
-		console.log("itemKey : " + itemKey);
+		if (this.props.isDebug) {
+			console.log("item : " + item);
+			console.log("itemKey : " + itemKey);
+		}
 		let group = this.props.groups[this.state.selectedLoadGroup];
 		let project = group.projects[this.state.selectedProject];
 		let dataset = project.datasets[this.state.selectedDataset];
@@ -974,8 +976,10 @@ export default class MicroMetaAppOmero extends React.PureComponent {
 	}
 
 	handleCompleteListGroups(groups) {
-		console.log("groups: ");
-		console.log(groups);
+		if (this.props.isDebug) {
+			console.log("groups: ");
+			console.log(groups);
+		}
 		this.setState({ groups: groups });
 	}
 
@@ -1000,12 +1004,16 @@ export default class MicroMetaAppOmero extends React.PureComponent {
 	}
 
 	onLoadMicroscope(microscopeID) {
+		if(this.props.isDebug) {
 		console.log("microscopeID: " + microscopeID);
+		}
 		this.setState({ microscopeRepoID: microscopeID });
 	}
 
 	onLoadSetting(settingID) {
+		if(this.props.isDebug) {
 		console.log("settingID: " + settingID);
+		}
 		this.setState({ settingRepoID: settingID });
 	}
 
@@ -1028,8 +1036,10 @@ export default class MicroMetaAppOmero extends React.PureComponent {
 	}
 
 	onGroupConfirm(loadGroupRepoID, saveGroupRepoID) {
+		if(this.props.isDebug) {
 		console.log("loadGroupRepoID: " + loadGroupRepoID);
 		console.log("sveGroupRepoID: " + saveGroupRepoID);
+		}
 		this.setState({
 			loadGroupRepoID: loadGroupRepoID,
 			saveGroupRepoID: saveGroupRepoID,
@@ -1038,9 +1048,11 @@ export default class MicroMetaAppOmero extends React.PureComponent {
 	}
 
 	onGroupImageConfirm(groupRepoID, imageRepoID, imageRepoName) {
+		if(this.props.isDebug) {
 		console.log("groupRepoID: " + groupRepoID);
 		console.log("imageRepoID: " + imageRepoID);
 		console.log("imageRepoName: " + imageRepoName);
+		}
 		this.setState({
 			loadGroupRepoID: groupRepoID,
 			imageRepoID: imageRepoID,
