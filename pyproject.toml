@@ -1,0 +1,22 @@
+[project]
+name = "omero-microMetaApp"
+version = "1.7.25"
+authors = [
+  { name="Alex Rigano", email="alex.rigano@umassmed.edu" },
+]
+description = "OMERO plugin version of Micro-Meta App"
+readme = "README.md"
+license = { file="LICENSE" }
+requires-python = ">=3.6"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: JavaScript",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Development Status :: 3 - Alpha"
+]
+
+[project.urls]
+"MicroMetaApp" = "https://wu-bimac.github.io/MicroMetaApp.github.io/"
+"MicroMetaApp OMERO" = "https://github.com/WU-BIMAC/MicroMetaApp-Omero/issues"
+"Bug Tracker" = "https://github.com/WU-BIMAC/MicroMetaApp-Omero/issues"

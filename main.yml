@@ -1,0 +1,4 @@
+- name: pypi-publish
+  uses: pypa/gh-action-pypi-publish@v1.5.1
+  with:
+    password: ${{ secrets.PYPI_API_TOKEN }}
